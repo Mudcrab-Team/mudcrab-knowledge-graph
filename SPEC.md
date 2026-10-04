@@ -1,9 +1,10 @@
 # SPEC: Mudcrab Research Knowledge Graph
 
-**Status:** Proposed implementation specification, not an implemented feature.  
-**Target repository:** `Mudcrab-Team/mudcrab`  
+**Status:** Local tooling implemented; [verification](docs/verification.md) records tested scope and external-tool limits.  
+**Target repository:** `Mudcrab-Team/mudcrab-knowledge-graph`  
+**Companion repository:** `Mudcrab-Team/mudcrab`  
 **Reviewed baseline:** `b2758e522dfbf273f641e9c787e6cbbcd019495c`  
-**Suggested repository destination:** `docs/specs/tooling/research-knowledge-graph.md`  
+**Original Mudcrab specification destination:** `docs/specs/tooling/research-knowledge-graph.md`  
 **Initial vertical slice:** NIF materials, texture semantics, conversion, and rendering.  
 **Intended implementer:** A coding agent working in a maintainer-approved checkout.
 

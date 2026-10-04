@@ -6,7 +6,18 @@
 
 The script checks formatting, strict Clippy, default and all-feature graph tests, doctests, 18 companion contract tests (including local documentation links), eight Python adapter tests with actual normalized-stream import, and real committed-source/history/privacy/MCP smokes. Source tests use original temporary Git repositories. API tests use explicit doubles; the original C fixture is actually compiled and executed. MCP performs a real stdio handshake and checks seven read-only tools, exact CLI equivalence and four escalation rejections.
 
-Current standalone results will be recorded after the first complete local run. The repository is published only after that verifier passes.
+Local standalone verification passed on 2026-10-04 with Rust 1.98.1 and Python 3.12:
+
+- 26 all-feature Rust tests and 25 default-feature Rust tests passed; no ignored tests. Doctest invocation passed with zero doctest cases.
+- Formatting and Clippy with warnings denied passed.
+- All 18 contract/documentation-link checks and eight adapter API tests passed.
+- Actual committed-source indexing, idempotent reimport, deletion history, bounded packet and fresh-export privacy scan passed.
+- Real rmcp stdio initialization/discovery/query passed: seven tools, exact CLI equivalence and four rejected escalation attempts.
+- The 210-package Cargo.lock closure contains no engine, Bevy, converter, WGPU or NIF-parser package and preserves the original locked dependency versions.
+
+The companion patch was separately applied to a clean reviewed-base worktree and reproduced all eight intended integration source files byte-for-byte. Its only lock change is the converter's already-locked Clap dependency edge. The relocated standalone source smoke was also run against actual reviewed Mudcrab Git objects (13,558 nodes / 13,353 assertions), and the relocated material smoke passed against the completed companion implementation/binaries with the same material snapshot and context IDs as the historical run. No shared target directory was used for builds. A new companion build was not claimed; the previously verified companion binaries were reused.
+
+CI runs the same portable verifier against published commits. It does not run the companion converter or installed Ghidra/RenderDoc applications.
 
 ## Companion extraction evidence
 
