@@ -1,0 +1,45 @@
+# PROPOSED configuration for implementation. Local checkouts only.
+# Replace UNRESOLVED with actual checked-out commits and pin tool versions.
+# Paths are local-root aliases, not paths embedded in exported bundles.
+schema_version = 1
+network_access = false
+execute_build_scripts = false
+execute_proc_macros = false
+
+[[sources]]
+id = "mudcrab"
+kind = "repository"
+origin = "https://github.com/Mudcrab-Team/mudcrab"
+root_alias = "MUDCRAB_CHECKOUT"
+revision = "b2758e522dfbf273f641e9c787e6cbbcd019495c"
+visibility = "public"
+mode = "source_structure"
+lineage_roots = ["mudcrab"]
+redistribution = "with_notice"
+# When a matching pre-generated SCIP index is available, explicitly select mode=scip
+# and configure its local path, target/features and indexer fingerprint.
+
+[[sources]]
+id = "commonlib-selected-fork"
+kind = "repository"
+origin = "UNRESOLVED"
+root_alias = "COMMONLIB_CHECKOUT"
+revision = "UNRESOLVED"
+visibility = "public"
+mode = "source_structure"
+lineage_roots = ["UNRESOLVED"]
+redistribution = "review_required"
+# Must not ingest until origin/revision/lineage are resolved; inspect exact fork license.
+
+[[sources]]
+id = "skyrim-local-analysis"
+kind = "binary"
+origin = "local://authorized-skyrim-analysis"
+root_alias = "GHIDRA_EXPORTS"
+revision = "UNRESOLVED"
+visibility = "restricted"
+mode = "normalized_bundle"
+lineage_roots = ["skyrim-local-analysis"]
+redistribution = "review_required"
+# The producer supplies actual module hash, analysis/index versions and selection.
+# This entry neither downloads Skyrim nor opens/decompiles a binary automatically.

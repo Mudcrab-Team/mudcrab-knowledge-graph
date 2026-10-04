@@ -1,0 +1,758 @@
+{
+  "schema_version": 1,
+  "node_kinds": [
+    "SourceFile",
+    "DocumentSection",
+    "CodeSymbol",
+    "ExternalSymbol",
+    "BinaryFunction",
+    "DataType",
+    "TypeField",
+    "Concept",
+    "Asset",
+    "AssetBlock",
+    "AssetField",
+    "Material",
+    "TextureBinding",
+    "ConversionStep",
+    "ShaderModule",
+    "ShaderBinding",
+    "Capture",
+    "DrawEvent",
+    "GpuResource",
+    "RuntimeObservation"
+  ],
+  "provenance_classes": [
+    "extracted",
+    "community",
+    "observed",
+    "manual",
+    "hypothesis"
+  ],
+  "visibility_order": [
+    "public",
+    "reviewed",
+    "restricted"
+  ],
+  "relations": [
+    {
+      "name": "CONTAINS",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "DECLARES",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "DataType",
+        "ShaderModule"
+      ],
+      "object_kinds": [
+        "CodeSymbol",
+        "ExternalSymbol",
+        "DataType",
+        "TypeField",
+        "ShaderBinding"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "DEFINES",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "DataType"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "HAS_FIELD",
+      "subject_kinds": [
+        "DataType",
+        "CodeSymbol",
+        "AssetBlock",
+        "Material"
+      ],
+      "object_kinds": [
+        "TypeField",
+        "AssetField"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "REFERENCES",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "CALLS_DIRECT",
+      "subject_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "object_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "MAY_CALL",
+      "subject_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "object_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "READS_FIELD",
+      "subject_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "object_kinds": [
+        "TypeField",
+        "AssetField",
+        "ShaderBinding"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "WRITES_FIELD",
+      "subject_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "object_kinds": [
+        "TypeField",
+        "AssetField",
+        "ShaderBinding"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "HAS_TYPE",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "DataType",
+        "CodeSymbol",
+        "ExternalSymbol"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "INHERITS",
+      "subject_kinds": [
+        "DataType",
+        "CodeSymbol",
+        "ExternalSymbol"
+      ],
+      "object_kinds": [
+        "DataType",
+        "CodeSymbol",
+        "ExternalSymbol"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "HAS_VTABLE_SLOT",
+      "subject_kinds": [
+        "DataType",
+        "CodeSymbol"
+      ],
+      "object_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "DOCUMENTS",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "NAMES",
+      "subject_kinds": [
+        "CodeSymbol",
+        "DocumentSection",
+        "TypeField"
+      ],
+      "object_kinds": [
+        "BinaryFunction",
+        "DataType",
+        "TypeField"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "DESCRIBES_CONCEPT",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "Concept"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "USES_TEXTURE",
+      "subject_kinds": [
+        "Material",
+        "AssetBlock",
+        "TextureBinding",
+        "ShaderModule"
+      ],
+      "object_kinds": [
+        "Asset",
+        "TextureBinding",
+        "GpuResource"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "HAS_MATERIAL",
+      "subject_kinds": [
+        "Asset",
+        "AssetBlock"
+      ],
+      "object_kinds": [
+        "Material"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "HAS_BINDING",
+      "subject_kinds": [
+        "Material",
+        "ShaderModule",
+        "DrawEvent"
+      ],
+      "object_kinds": [
+        "TextureBinding",
+        "ShaderBinding"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "INPUT_TO",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "ConversionStep"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "PRODUCES",
+      "subject_kinds": [
+        "ConversionStep"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "DERIVED_FROM",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "PRUNED_REFERENCE",
+      "subject_kinds": [
+        "ConversionStep",
+        "Material",
+        "Asset"
+      ],
+      "object_kinds": [
+        "TextureBinding",
+        "Asset"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "HANDLES_CONCEPT",
+      "subject_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol",
+        "ShaderModule"
+      ],
+      "object_kinds": [
+        "Concept"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "CORRESPONDS_TO",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "CAPTURED_IN",
+      "subject_kinds": [
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation",
+        "ShaderModule"
+      ],
+      "object_kinds": [
+        "Capture"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "BINDS_RESOURCE",
+      "subject_kinds": [
+        "DrawEvent",
+        "ShaderBinding",
+        "TextureBinding"
+      ],
+      "object_kinds": [
+        "GpuResource"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "OBSERVED_AT",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "DrawEvent",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "OBSERVED_CALL",
+      "subject_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "object_kinds": [
+        "CodeSymbol",
+        "BinaryFunction",
+        "ExternalSymbol"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "IMPORTS",
+      "subject_kinds": [
+        "SourceFile",
+        "ShaderModule",
+        "DocumentSection"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": true
+    },
+    {
+      "name": "EVOLVES_TO",
+      "subject_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "object_kinds": [
+        "SourceFile",
+        "DocumentSection",
+        "CodeSymbol",
+        "ExternalSymbol",
+        "BinaryFunction",
+        "DataType",
+        "TypeField",
+        "Concept",
+        "Asset",
+        "AssetBlock",
+        "AssetField",
+        "Material",
+        "TextureBinding",
+        "ConversionStep",
+        "ShaderModule",
+        "ShaderBinding",
+        "Capture",
+        "DrawEvent",
+        "GpuResource",
+        "RuntimeObservation"
+      ],
+      "default_automatic_admission": false
+    }
+  ],
+  "notes": [
+    "Domain/range is validated; it does not establish a relation.",
+    "Admission still requires valid evidence and the provenance rules in SPEC.md.",
+    "No SAME_AS relation.",
+    "Different values/candidates do not automatically imply contradiction."
+  ]
+}

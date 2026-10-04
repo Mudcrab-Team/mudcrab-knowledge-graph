@@ -1,0 +1,371 @@
+{
+  "schema_version": 1,
+  "reviewed_commit": "b2758e522dfbf273f641e9c787e6cbbcd019495c",
+  "purpose": "Implementation task packets, not authorization to run external tools or modify a remote repository.",
+  "tasks": [
+    {
+      "id": "KG-00",
+      "milestone": "M0",
+      "title": "Reconcile checkout and lock decisions",
+      "depends_on": [],
+      "deliverables": [
+        "Read current policies and validate source anchors against reviewed commit.",
+        "Create next-free ADR and baseline reconciliation."
+      ],
+      "acceptance": [
+        "No unreviewed version assumptions.",
+        "No repository policy or API changes hidden in scope."
+      ],
+      "spec_sections": [
+        "1",
+        "3",
+        "13",
+        "15"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-01",
+      "milestone": "M1",
+      "title": "Implement typed model, identities and bundle validation",
+      "depends_on": [
+        "KG-00"
+      ],
+      "deliverables": [
+        "Rust model and exact canonical hashing.",
+        "Schema validation and cross-reference/ontology validator."
+      ],
+      "acceptance": [
+        "All identity vectors pass.",
+        "Reject floats, malformed paths, foreign references and immutable-ID collisions."
+      ],
+      "spec_sections": [
+        "4",
+        "5",
+        "6"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-02",
+      "milestone": "M1",
+      "title": "Implement transactional SQLite storage",
+      "depends_on": [
+        "KG-01"
+      ],
+      "deliverables": [
+        "Migrations and one-writer store.",
+        "Atomic staged publication, idempotent ingestion and run diagnostics."
+      ],
+      "acceptance": [
+        "Interrupted import invisible to readers.",
+        "Foreign keys and published-state checks pass.",
+        "Conflicting immutable records rejected."
+      ],
+      "spec_sections": [
+        "3",
+        "6"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-03",
+      "milestone": "M1",
+      "title": "Implement contexts, policy and evidence retrieval",
+      "depends_on": [
+        "KG-02"
+      ],
+      "deliverables": [
+        "Pinned context creation and aliases.",
+        "Policy-aware evidence resolution with verified bytes.",
+        "Append-only review and conflict records."
+      ],
+      "acceptance": [
+        "No cross-build leakage or current-main fetch.",
+        "Privacy closure and Unicode source spans tested.",
+        "Hypotheses excluded unless selected."
+      ],
+      "spec_sections": [
+        "4",
+        "11",
+        "13"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-04",
+      "milestone": "M1",
+      "title": "Implement indexed search and bounded traversal",
+      "depends_on": [
+        "KG-03"
+      ],
+      "deliverables": [
+        "FTS and typed adjacency query service.",
+        "Node, neighbors, coverage and common JSON response."
+      ],
+      "acceptance": [
+        "Deterministic result order and cursors.",
+        "High-fan-out limits and source filtering.",
+        "No hidden identifiers in counts or snippets."
+      ],
+      "spec_sections": [
+        "11",
+        "12"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-05",
+      "milestone": "M2",
+      "title": "Implement source and SCIP import",
+      "depends_on": [
+        "KG-04"
+      ],
+      "deliverables": [
+        "Mudcrab Rust SCIP import, structural source fallback.",
+        "External/local symbols, occurrence roles, encodings and dependency provenance."
+      ],
+      "acceptance": [
+        "Index actual checkout.",
+        "SCIP reference never automatically becomes call.",
+        "Feature/target coverage and unresolved symbols reported."
+      ],
+      "spec_sections": [
+        "7"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-06",
+      "milestone": "M2",
+      "title": "Index community sources, docs and Bevy WGSL",
+      "depends_on": [
+        "KG-05"
+      ],
+      "deliverables": [
+        "Opt-in local source registry.",
+        "C/C++ structural or SCIP adapters, Markdown and Bevy shader declarations.",
+        "Version/lineage metadata and material source seeds."
+      ],
+      "acceptance": [
+        "No regex-based guessed ABI layout.",
+        "Imported names retain origin.",
+        "Bevy preprocessor placeholders not reported as numeric bindings."
+      ],
+      "spec_sections": [
+        "7",
+        "9"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-07",
+      "milestone": "M3",
+      "title": "Add read-only converter research export",
+      "depends_on": [
+        "KG-01",
+        "KG-00"
+      ],
+      "deliverables": [
+        "Converter kg-export bin and bounded DTO helper.",
+        "Original parsed NIF fields and interpreted material contracts with diagnostics."
+      ],
+      "acceptance": [
+        "Reuse existing parser/inspect_nif_materials.",
+        "Resilient fallback not reported as authored raw field.",
+        "No input/output mutation; unchanged conversion behavior."
+      ],
+      "spec_sections": [
+        "8"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-08",
+      "milestone": "M3",
+      "title": "Import actual GLB and conversion lineage",
+      "depends_on": [
+        "KG-07",
+        "KG-04"
+      ],
+      "deliverables": [
+        "Final GLB JSON pointers and material/texture bindings.",
+        "Manifest hash/config/pruned-reference relationships.",
+        "Separate raw, interpreted and emitted stages."
+      ],
+      "acceptance": [
+        "Two shapes and duplicate names join correctly.",
+        "Absent extension never implies zero flags.",
+        "sRGB aliases, clamps and pruning retained."
+      ],
+      "spec_sections": [
+        "8",
+        "14"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-09",
+      "milestone": "M3",
+      "title": "Deliver actual materials cross-layer trace",
+      "depends_on": [
+        "KG-06",
+        "KG-08"
+      ],
+      "deliverables": [
+        "Trace material/concept implementations.",
+        "Repo source selectors for double-sided, texture slots and glossiness.",
+        "Actual synthetic NIF generation/conversion trace."
+      ],
+      "acceptance": [
+        "Q01-Q03 supported with exact citations.",
+        "Unknown runtime consumer reported as unresolved.",
+        "No hard-coded demonstration-only node IDs."
+      ],
+      "spec_sections": [
+        "11",
+        "14"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-10",
+      "milestone": "M4",
+      "title": "Implement bounded Ghidra/PyGhidra export",
+      "depends_on": [
+        "KG-03",
+        "KG-06"
+      ],
+      "deliverables": [
+        "Read-only exporter at levels 0/1/2.",
+        "Types/signatures/import lineage, direct/indirect calls, selected P-code.",
+        "Original native toy fixture and smoke instructions."
+      ],
+      "acceptance": [
+        "Actual toy program export where tool available.",
+        "Limits, decompile timeouts and renamed analysis snapshot tested.",
+        "No mutations or automatic aggregate tool execution."
+      ],
+      "spec_sections": [
+        "9"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-11",
+      "milestone": "M5",
+      "title": "Implement RenderDoc and runtime-observation import",
+      "depends_on": [
+        "KG-03",
+        "KG-08"
+      ],
+      "deliverables": [
+        "Existing-capture exporter for selected events/resources/reflection.",
+        "Generic debugger/DevBench observation envelope with loaded-module identity."
+      ],
+      "acceptance": [
+        "Capture-local resource IDs do not merge.",
+        "Heap addresses not normalized as RVAs.",
+        "Replay availability separate from import success.",
+        "Asset/native-to-GPU mapping remains candidate without evidence."
+      ],
+      "spec_sections": [
+        "10"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-12",
+      "milestone": "M6",
+      "title": "Implement context packets, proposals and review CLI",
+      "depends_on": [
+        "KG-09",
+        "KG-10",
+        "KG-11"
+      ],
+      "deliverables": [
+        "Bounded context packets and proposal import.",
+        "Explicit review command and conflict surfacing."
+      ],
+      "acceptance": [
+        "Q04-Q10 return evidence or explicit missing-stage status.",
+        "64KiB default packet bound.",
+        "No model credentials or unrequested tool execution."
+      ],
+      "spec_sections": [
+        "11",
+        "12"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-13",
+      "milestone": "M6",
+      "title": "Expose read-only MCP over shared query service",
+      "depends_on": [
+        "KG-12"
+      ],
+      "deliverables": [
+        "Seven typed MCP tools using rmcp stdio.",
+        "Fixed context/policy, tool annotations and diagnostics routing."
+      ],
+      "acceptance": [
+        "CLI/MCP output equivalence.",
+        "Unknown tools, arbitrary SQL/path input and policy escalation rejected.",
+        "Restricted launch acknowledgement enforced."
+      ],
+      "spec_sections": [
+        "12",
+        "13"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-14",
+      "milestone": "M6",
+      "title": "Implement incremental imports and safe public export",
+      "depends_on": [
+        "KG-13"
+      ],
+      "deliverables": [
+        "Fingerprint invalidation and historical snapshot retention.",
+        "New-destination policy-filtered export with rebuilt FTS and artifact closure."
+      ],
+      "acceptance": [
+        "Stale contexts/cursors behave explicitly.",
+        "Private markers absent from files, indexes and diagnostics.",
+        "No sharing working database or WAL after row deletion."
+      ],
+      "spec_sections": [
+        "6",
+        "13"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "KG-15",
+      "milestone": "M6",
+      "title": "Complete integration, documentation and measured checks",
+      "depends_on": [
+        "KG-14"
+      ],
+      "deliverables": [
+        "All query demonstrations and package-level tests.",
+        "Actual source + synthetic conversion + external-tool smoke reports.",
+        "Documented quick start, performance report, source scope and missing prerequisites."
+      ],
+      "acceptance": [
+        "Current repository fmt/clippy/nextest gates.",
+        "Graph core dependency independence.",
+        "No stubs-only adapters or original-game parity claims."
+      ],
+      "spec_sections": [
+        "14",
+        "15",
+        "16",
+        "17"
+      ],
+      "status": "completed"
+    }
+  ]
+}

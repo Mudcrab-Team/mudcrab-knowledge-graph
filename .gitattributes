@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Preserve required unified-diff context whitespace and exact patch bytes.
+*.patch -text whitespace=-blank-at-eol
+# Markdown uses intentional two-space line breaks in the retained specification.
+*.md whitespace=-blank-at-eol

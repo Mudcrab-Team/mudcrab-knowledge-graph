@@ -1,0 +1,38 @@
+{
+  "algorithm": "MUDCRAB-KG-ID-v1",
+  "vectors": [
+    {
+      "kind": "node",
+      "parts": [
+        "a",
+        "bc"
+      ],
+      "expected": "node_08be42146ffabd1668a4ae8c70dab2d253f23c22b06b7fd86ca87b29f2f61694"
+    },
+    {
+      "kind": "node",
+      "parts": [
+        "ab",
+        "c"
+      ],
+      "expected": "node_f80ce2318c73c63ea42bc63d245137e2f40c0dab77bc5249b44941dd045fead9"
+    },
+    {
+      "kind": "node",
+      "parts": [
+        "asset",
+        "path/é",
+        "0x10"
+      ],
+      "expected": "node_9c7e4f35d56f62cea34bac615c12aef7a7c132490c82a4da9e29830f10c25264"
+    },
+    {
+      "kind": "node",
+      "parts": [
+        "a\u0000b",
+        "c"
+      ],
+      "expected": "node_706ea3b590dedd03850d4503835ee3c32d9bf24fd9123be488f1748505dbd051"
+    }
+  ]
+}

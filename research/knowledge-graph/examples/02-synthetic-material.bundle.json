@@ -1,0 +1,354 @@
+{
+  "format": "mudcrab-kg-bundle",
+  "schema_version": 1,
+  "source": {
+    "id": "synthetic-material",
+    "kind": "asset_collection",
+    "origin_uri": "synthetic://synthetic-material",
+    "visibility": "public",
+    "license_expression": null,
+    "lineage_roots": [
+      "synthetic-material"
+    ],
+    "redistribution": "review_required"
+  },
+  "snapshot": {
+    "id": "snap_8ea91bbd97bdcd546a62766c34322e676c61ef62c22be20a6433787ceffbb71e",
+    "source_id": "synthetic-material",
+    "revision": "fixture-v1",
+    "content_sha256": "50ff1f2808c81172eeebc8fedc10cd6087cad88d37df1bd580515deda47225ce",
+    "extraction": {
+      "tool": "handoff-synthetic-generator",
+      "version": "1",
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "scope_sha256": "37edae4e204d041ba1cef7c9ee7114f336ff9b9c08aa6ef3fe2d6707a58bd59e"
+    },
+    "scope": {
+      "mode": "selected",
+      "synthetic": true,
+      "layer": "material_dto",
+      "paths": [
+        "fixtures/material-observation.json"
+      ]
+    },
+    "dependencies": [
+      "snap_5540a69aa965083cbb0de1cbe7c56f7203fe2f48b9e21259ce37409901a77256"
+    ],
+    "visibility": "public",
+    "capabilities": [
+      {
+        "name": "material_dto",
+        "status": "complete",
+        "detail": "Synthetic contract example only; not an actual tool export.",
+        "counts": {
+          "inputs_enumerated": 1,
+          "inputs_attempted": 1,
+          "records_emitted": 20,
+          "inputs_failed": 0,
+          "inputs_skipped": 0
+        }
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "art_eeeccbe2cd428485d2d0110d3661e58795a36d19764401369c147a5f398795d5",
+      "path": "fixtures/material-observation.json",
+      "sha256": "50ff1f2808c81172eeebc8fedc10cd6087cad88d37df1bd580515deda47225ce",
+      "media_type": "application/json",
+      "byte_size": 163,
+      "visibility": "public",
+      "blob_sha256": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+      "artifact_id": "art_eeeccbe2cd428485d2d0110d3661e58795a36d19764401369c147a5f398795d5",
+      "locator": {
+        "kind": "json_pointer",
+        "pointer": ""
+      },
+      "method": "synthetic_example",
+      "provenance_class": "extracted",
+      "visibility": "public"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node_8b09f8a517ccab65f4e700382cd86033fc7df129a5385ad17e314f77e3c51326",
+      "kind": "Asset",
+      "logical_key": "synthetic/material-input",
+      "display_name": "Synthetic material input",
+      "attributes": {
+        "synthetic": true
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_338c4f885afd3c13c9cf49fa2befd670f985c8639784810d8b25da3eed89f580",
+      "kind": "AssetField",
+      "logical_key": "synthetic/material-input/block/7/shader_flags_2",
+      "display_name": "shader_flags_2",
+      "attributes": {
+        "type": "u32",
+        "raw": "0x00000010"
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_12d372cf7a3b89b92926629e8668cd2a7aa61a317e8b400a59cf037113ec65b5",
+      "kind": "Material",
+      "logical_key": "synthetic/interpreted/shape/2",
+      "display_name": "Interpreted shape 2 material",
+      "attributes": {
+        "double_sided": true,
+        "stage": "interpreted"
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_001b6252bd6f83d2f9deaf53fab560ee93dc0c12101a20f7199c397b6cbe7678",
+      "kind": "ConversionStep",
+      "logical_key": "synthetic/conversion",
+      "display_name": "Synthetic conversion",
+      "attributes": {
+        "synthetic": true
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_b280edbd36a0c4fe1422960fbdf4f4810c02f2206e719f3e38014e3bf789bd45",
+      "kind": "Asset",
+      "logical_key": "synthetic/published",
+      "display_name": "Synthetic published representation",
+      "attributes": {
+        "stage": "emitted"
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_a0c4e4a7741d07a071792f94be17c67e18ab893edfe7960d9963212326b1ec87",
+      "kind": "AssetField",
+      "logical_key": "synthetic/published/materials/0/doubleSided",
+      "display_name": "doubleSided",
+      "attributes": {
+        "value": true
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_fb2a1d40b83e6f84e380dfe26b5c4dfd142a82bbd4b03a81771b72d0fdd3dbca",
+      "kind": "TextureBinding",
+      "logical_key": "synthetic/shape2/slot4",
+      "display_name": "Environment slot example",
+      "attributes": {
+        "slot": 4,
+        "semantic": "environment_cube",
+        "resolution": "pruned"
+      },
+      "evidence_ids": [
+        "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8"
+      ],
+      "visibility": "public"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "as_d228ace6f8433b3a7f48f29193352b9f7dbe085694e590612fe2c3ca0557af36",
+      "subject": "node_8b09f8a517ccab65f4e700382cd86033fc7df129a5385ad17e314f77e3c51326",
+      "predicate": "CONTAINS",
+      "object": "node_338c4f885afd3c13c9cf49fa2befd670f985c8639784810d8b25da3eed89f580",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_c0cd5487f04cbde487b0cd8b5b0d6267bce6a0f20544de13384858e90d74ec7f",
+      "subject": "node_8b09f8a517ccab65f4e700382cd86033fc7df129a5385ad17e314f77e3c51326",
+      "predicate": "HAS_MATERIAL",
+      "object": "node_12d372cf7a3b89b92926629e8668cd2a7aa61a317e8b400a59cf037113ec65b5",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_8013124883aedd9273020638b2574d3cd81901218a378deccd24e0f2f1499258",
+      "subject": "node_12d372cf7a3b89b92926629e8668cd2a7aa61a317e8b400a59cf037113ec65b5",
+      "predicate": "DERIVED_FROM",
+      "object": "node_338c4f885afd3c13c9cf49fa2befd670f985c8639784810d8b25da3eed89f580",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_b8fca4e36f39eb3ccab57fe69afa60348c9c47736e0a181ae3028145178ef10c",
+      "subject": "node_8b09f8a517ccab65f4e700382cd86033fc7df129a5385ad17e314f77e3c51326",
+      "predicate": "INPUT_TO",
+      "object": "node_001b6252bd6f83d2f9deaf53fab560ee93dc0c12101a20f7199c397b6cbe7678",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_ce0d9f986a0029a2a3702cc9a942743ce1a0df6f392e2b45a99cb25b6cdfeed4",
+      "subject": "node_001b6252bd6f83d2f9deaf53fab560ee93dc0c12101a20f7199c397b6cbe7678",
+      "predicate": "PRODUCES",
+      "object": "node_b280edbd36a0c4fe1422960fbdf4f4810c02f2206e719f3e38014e3bf789bd45",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_93e37c0b5e6f3cbbf71d565dfbd452ad7e18f4b0c7df3cd4460438c3352efcaa",
+      "subject": "node_b280edbd36a0c4fe1422960fbdf4f4810c02f2206e719f3e38014e3bf789bd45",
+      "predicate": "CONTAINS",
+      "object": "node_a0c4e4a7741d07a071792f94be17c67e18ab893edfe7960d9963212326b1ec87",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_b8a53962cc3a4d266db5af803f431a5900163b735bed6d5b10753cef3bb92703",
+      "subject": "node_a0c4e4a7741d07a071792f94be17c67e18ab893edfe7960d9963212326b1ec87",
+      "predicate": "DERIVED_FROM",
+      "object": "node_12d372cf7a3b89b92926629e8668cd2a7aa61a317e8b400a59cf037113ec65b5",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_1037127b83ff5808b698ebb268ec8ae65d2e72e8edd2991f9653bce8e1b12b0f",
+      "subject": "node_12d372cf7a3b89b92926629e8668cd2a7aa61a317e8b400a59cf037113ec65b5",
+      "predicate": "HAS_BINDING",
+      "object": "node_fb2a1d40b83e6f84e380dfe26b5c4dfd142a82bbd4b03a81771b72d0fdd3dbca",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_04a6fbf7ef7c29561d0904b77256152d1e19383a0f2d0b9b770a8cca68d39540",
+      "subject": "node_001b6252bd6f83d2f9deaf53fab560ee93dc0c12101a20f7199c397b6cbe7678",
+      "predicate": "PRUNED_REFERENCE",
+      "object": "node_fb2a1d40b83e6f84e380dfe26b5c4dfd142a82bbd4b03a81771b72d0fdd3dbca",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_2eb91735a35cdf9215f0bed4e658defd4761006af61e7df4db1cd4b5bad8ea0d",
+      "subject": "node_338c4f885afd3c13c9cf49fa2befd670f985c8639784810d8b25da3eed89f580",
+      "predicate": "DESCRIBES_CONCEPT",
+      "object": "node_11770b4099a088d26368b817bc1e0522a22be9e4af5bc16aff8d563c2c0fa353",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "manual",
+      "initial_state": "proposed",
+      "visibility": "public"
+    },
+    {
+      "id": "as_9a2199115411678a7d6d96871086c456d86c1f2995f2ff6423a5ac93b4d7811f",
+      "subject": "node_001b6252bd6f83d2f9deaf53fab560ee93dc0c12101a20f7199c397b6cbe7678",
+      "predicate": "REFERENCES",
+      "object": "node_fbf5ff2e94bdba2b1fbc5bf7cb66418e53e95416cb2f72d08a6c282db09428cc",
+      "attributes": {
+        "meaning": "synthetic implementation selector"
+      },
+      "evidence": [
+        {
+          "id": "ev_f6269fb0f393742d4324914a313b2715463c4185d59b51a0055ab373293652a8",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "manual",
+      "initial_state": "proposed",
+      "visibility": "public"
+    }
+  ]
+}

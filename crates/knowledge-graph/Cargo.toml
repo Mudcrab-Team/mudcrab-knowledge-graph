@@ -1,0 +1,39 @@
+[package]
+name = "mudcrab-knowledge-graph"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Local, versioned research evidence graph for Mudcrab"
+repository = "https://github.com/Mudcrab-Team/mudcrab-knowledge-graph"
+readme = "../../README.md"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "mudcrab-kg"
+path = "src/main.rs"
+
+[features]
+default = []
+mcp = ["dep:rmcp", "dep:schemars", "dep:tokio"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+rusqlite.workspace = true
+clap = { version = "4.6", features = ["derive"] }
+thiserror = "2"
+jsonschema = { version = "0.33", default-features = false }
+scip = "0.8"
+protobuf = "3"
+tree-sitter = "0.25"
+tree-sitter-rust = "0.24"
+tree-sitter-cpp = "0.23"
+roxmltree = "0.20"
+toml = "0.8"
+rmcp = { version = "0.8", optional = true, features = ["server", "transport-io"] }
+schemars = { version = "1", optional = true }
+tokio = { workspace = true, optional = true, features = ["io-std"] }
+
+[dev-dependencies]
+tempfile = "3"

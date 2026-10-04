@@ -1,0 +1,802 @@
+diff --git a/crates/converter/Cargo.toml b/crates/converter/Cargo.toml
+index f64bb43..b78ee9b 100644
+--- a/crates/converter/Cargo.toml
++++ b/crates/converter/Cargo.toml
+@@ -4,6 +4,7 @@ version.workspace = true
+ edition.workspace = true
+ 
+ [dependencies]
++clap = { version = "4.6", features = ["derive"] }
+ shared = { path = "../shared" }
+ mesh-tools.workspace = true
+ basis-universal.workspace = true
+diff --git a/crates/converter/src/bin/kg-export.rs b/crates/converter/src/bin/kg-export.rs
+new file mode 100644
+index 0000000..2f0d835
+--- /dev/null
++++ b/crates/converter/src/bin/kg-export.rs
+@@ -0,0 +1,190 @@
++//! Explicitly selected read-only material research export; never runs conversion.
++use clap::Parser;
++use color_eyre::{Result, eyre::ensure};
++use converter::{cache, research};
++use serde::Deserialize;
++use serde_json::{Value, json};
++use std::{
++    fs,
++    path::{Path, PathBuf},
++};
++#[derive(Parser)]
++#[command(about = "Read-only selected NIF/GLB research export")]
++struct Args {
++    #[arg(long)]
++    input_root: PathBuf,
++    #[arg(long)]
++    converted_root: Option<PathBuf>,
++    #[arg(long)]
++    selection: PathBuf,
++    #[arg(long)]
++    out: PathBuf,
++    #[arg(long)]
++    converter_revision: Option<String>,
++    #[arg(long)]
++    synthetic: bool,
++}
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++struct Selection {
++    schema_version: u32,
++    inputs: Vec<Input>,
++    #[serde(default)]
++    manifest: Option<String>,
++}
++#[derive(Deserialize)]
++#[serde(deny_unknown_fields)]
++struct Input {
++    nif: String,
++    #[serde(default)]
++    glb: Option<String>,
++}
++fn main() {
++    if let Err(e) = run(Args::parse()) {
++        eprintln!("{e}");
++        std::process::exit(5);
++    }
++}
++fn run(args: Args) -> Result<()> {
++    ensure!(
++        fs::metadata(&args.selection)?.len() <= 1024 * 1024,
++        "selection exceeds limit"
++    );
++    let selection: Selection = serde_json::from_slice(&fs::read(&args.selection)?)?;
++    ensure!(
++        selection.schema_version == 1
++            && !selection.inputs.is_empty()
++            && selection.inputs.len() <= 256,
++        "select 1–256 inputs"
++    );
++    ensure!(!args.out.exists(), "output destination must be new");
++    let parent = args.out.parent().unwrap_or(Path::new("."));
++    fs::create_dir_all(parent)?;
++    let out_parent = parent.canonicalize()?;
++    let input_root = args.input_root.canonicalize()?;
++    let converted_root = args
++        .converted_root
++        .as_deref()
++        .unwrap_or(&args.input_root)
++        .canonicalize()?;
++    ensure!(
++        !out_parent.starts_with(&input_root) && !out_parent.starts_with(&converted_root),
++        "research output must be outside read-only inputs"
++    );
++    if let Some(revision) = &args.converter_revision {
++        ensure!(
++            revision.len() == 40 && revision.bytes().all(|c| c.is_ascii_hexdigit()),
++            "converter revision must be a full commit"
++        );
++    }
++    let staging = parent.join(format!(".kg-export-{}", std::process::id()));
++    ensure!(
++        !staging.exists(),
++        "research staging destination already exists"
++    );
++    fs::create_dir(&staging)?;
++    let result = (|| -> Result<Value> {
++        let mut inputs = vec![];
++        let mut seen = std::collections::BTreeSet::new();
++        for input in selection.inputs {
++            ensure!(seen.insert(input.nif.clone()), "duplicate selected NIF");
++            let nif = safe(&input_root, &input.nif)?;
++            ensure!(
++                fs::metadata(&nif)?.len() <= research::MAX_INPUT_BYTES,
++                "NIF exceeds limit"
++            );
++            let raw = fs::read(&nif)?;
++            let inspection = research::inspect_materials(&nif)?;
++            let nif_artifact = format!("input/{}", input.nif);
++            copy_bytes(&staging, &nif_artifact, &raw)?;
++            let glb = if let Some(name) = input.glb {
++                let path = safe(&converted_root, &name)?;
++                ensure!(
++                    fs::metadata(&path)?.len() <= research::MAX_INPUT_BYTES,
++                    "GLB exceeds limit"
++                );
++                let raw = fs::read(&path)?;
++                let artifact = format!("output/{name}");
++                copy_bytes(&staging, &artifact, &raw)?;
++                Some(
++                    json!({"path":artifact,"output_path":name,"sha256":cache::hash_bytes(&raw),"byte_size":raw.len()}),
++                )
++            } else {
++                None
++            };
++            ensure!(
++                cache::hash_file(&nif)? == inspection.asset_sha256,
++                "NIF changed during read-only export"
++            );
++            inputs.push(json!({"nif":{"path":nif_artifact,"sha256":cache::hash_bytes(&raw),"byte_size":raw.len()},"inspection":inspection,"glb":glb}));
++        }
++        let manifest = if let Some(name) = selection.manifest {
++            let path = safe(&converted_root, &name)?;
++            ensure!(
++                fs::metadata(&path)?.len() <= 8 * 1024 * 1024,
++                "manifest exceeds limit"
++            );
++            let bytes = fs::read(path)?;
++            let data: Value = serde_json::from_slice(&bytes)?;
++            let artifact = format!("manifest/{name}");
++            copy_bytes(&staging, &artifact, &bytes)?;
++            Some(json!({"path":artifact,"sha256":cache::hash_bytes(&bytes),"data":data}))
++        } else {
++            None
++        };
++        Ok(
++            json!({"format":"mudcrab-material-inspection","schema_version":1,"exporter":{"name":"kg-export","version":env!("CARGO_PKG_VERSION")},"converter_revision":args.converter_revision,"converter_revision_origin":if args.converter_revision.is_some(){"operator_supplied"}else{"unknown"},"synthetic":args.synthetic,"visibility":if args.synthetic{"public"}else{"restricted"},"inputs":inputs,"manifest":manifest}),
++        )
++    })();
++    match result {
++        Ok(report) => {
++            fs::write(
++                staging.join("inspection.json"),
++                serde_json::to_vec_pretty(&report)?,
++            )?;
++            ensure!(
++                !args.out.exists(),
++                "output destination appeared during export"
++            );
++            fs::rename(&staging, &args.out)?;
++            println!(
++                "{}",
++                json!({"format":"mudcrab-material-inspection","inputs":report["inputs"].as_array().map_or(0,Vec::len),"status":"exported"})
++            );
++            Ok(())
++        }
++        Err(e) => {
++            let _ = fs::remove_dir_all(staging);
++            Err(e)
++        }
++    }
++}
++fn safe(root: &Path, name: &str) -> Result<PathBuf> {
++    ensure!(
++        !name.is_empty()
++            && !name.starts_with('/')
++            && !name.contains(['\\', ':', '\0'])
++            && name
++                .split('/')
++                .all(|s| !s.is_empty() && s != ".." && s != "."),
++        "noncanonical selected input path"
++    );
++    let mut path = root.to_owned();
++    for component in name.split('/') {
++        path.push(component);
++        ensure!(
++            !fs::symlink_metadata(&path)?.file_type().is_symlink(),
++            "symlink selected input is forbidden"
++        );
++    }
++    ensure!(path.is_file(), "selected input is not an ordinary file");
++    Ok(path)
++}
++fn copy_bytes(staging: &Path, path: &str, bytes: &[u8]) -> Result<()> {
++    let dest = staging.join("artifacts").join(path);
++    if let Some(p) = dest.parent() {
++        fs::create_dir_all(p)?;
++    }
++    fs::write(dest, bytes)?;
++    Ok(())
++}
+diff --git a/crates/converter/src/lib.rs b/crates/converter/src/lib.rs
+index 464e726..3081034 100644
+--- a/crates/converter/src/lib.rs
++++ b/crates/converter/src/lib.rs
+@@ -13,6 +13,7 @@ pub mod material;
+ pub mod mesh;
+ pub mod pipeline;
+ pub mod progress;
++pub mod research;
+ pub mod script;
+ pub mod texture;
+ pub mod texture_gpu;
+diff --git a/crates/converter/src/research.rs b/crates/converter/src/research.rs
+new file mode 100644
+index 0000000..c9845b6
+--- /dev/null
++++ b/crates/converter/src/research.rs
+@@ -0,0 +1,161 @@
++//! Read-only bounded material inspection. Decoded input is distinct from converter interpretation.
++use crate::{
++    cache,
++    mesh::{MeshConverter, parse_skyrim_header},
++};
++use color_eyre::{Result, eyre::ensure};
++use project_wormhole_nif::{bs::prelude::BSShaderTextureSet, nif_block::NifBlock};
++use serde::{Deserialize, Serialize};
++use serde_json::{Value, json};
++use std::{
++    panic::{AssertUnwindSafe, catch_unwind},
++    path::Path,
++};
++pub const MAX_INPUT_BYTES: u64 = 128 * 1024 * 1024;
++#[derive(Debug, Clone, Serialize, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct RawBlock {
++    pub block: u32,
++    pub block_type: String,
++    pub status: String,
++    pub fields: Value,
++    pub block_byte_start: u64,
++    pub block_byte_end: u64,
++}
++#[derive(Debug, Clone, Serialize, Deserialize)]
++#[serde(deny_unknown_fields)]
++pub struct MaterialInspection {
++    pub schema_version: u32,
++    pub asset_sha256: String,
++    pub header: Value,
++    pub raw_blocks: Vec<RawBlock>,
++    pub interpreted: Value,
++    pub diagnostics: Vec<Value>,
++}
++/// Inspect only selected bytes; never convert, repair or modify the input.
++pub fn inspect_materials(path: &Path) -> Result<MaterialInspection> {
++    ensure!(
++        std::fs::metadata(path)?.len() <= MAX_INPUT_BYTES,
++        "research NIF exceeds 128 MiB"
++    );
++    let bytes = std::fs::read(path)?;
++    let (mut data, header) = parse_skyrim_header(&bytes, path)?;
++    ensure!(header.block_count <= 65536, "research block limit exceeded");
++    let mut raw_blocks = vec![];
++    let mut diagnostics = vec![];
++    for index in 0..header.block_count as usize {
++        let size = header.block_size_index[index] as usize;
++        ensure!(size <= data.len(), "truncated selected NIF block");
++        let start = bytes.len() - data.len();
++        let (raw, rest) = data.split_at(size);
++        data = rest;
++        let block_type = header
++            .get_block_type(index)
++            .map_err(|_| color_eyre::eyre::eyre!("invalid block type"))?
++            .to_owned();
++        if !matches!(
++            block_type.as_str(),
++            "BSTriShape"
++                | "NiTriShape"
++                | "BSDynamicTriShape"
++                | "BSSubIndexTriShape"
++                | "BSLODTriShape"
++                | "BSLightingShaderProperty"
++                | "BSEffectShaderProperty"
++                | "BSShaderTextureSet"
++                | "NiAlphaProperty"
++        ) {
++            continue;
++        }
++        let parsed = catch_unwind(AssertUnwindSafe(|| {
++            NifBlock::parse(raw, block_type.clone())
++        }));
++        let mut status = "decoded";
++        let fields = match parsed {
++            Ok(Ok((_, block))) => match block {
++                NifBlock::BSLightingShaderProperty(p) => {
++                    json!({"shader_type":p.shader_type,"shader_flags_1":p.shader_flags_1.raw(),"shader_flags_2":p.shader_flags_2.raw(),"texture_set":p.texture_set,"alpha":f32_value(p.alpha),"glossiness":f32_value(p.glossiness),"specular_strength":f32_value(p.specular_strength),"specular_color":p.specular_color.0.to_array().map(f32_value),"emissive_color":p.emissive_color.0.to_array().map(f32_value),"emissive_multiple":f32_value(p.emissive_multiple),"uv_offset":p.uv_offset.0.to_array().map(f32_value),"uv_scale":p.uv_scale.0.to_array().map(f32_value)})
++                }
++                NifBlock::BSEffectShaderProperty(p) => {
++                    json!({"shader_flags_1":p.shader_flags_1.raw(),"shader_flags_2":p.shader_flags_2.raw(),"source_texture":p.source_texture.0,"greyscale_texture":p.greyscale_texture.0,"base_color":p.base_color.0.to_array().map(f32_value),"base_color_scale":f32_value(p.base_color_scale)})
++                }
++                NifBlock::BSShaderTextureSet(_) => match BSShaderTextureSet::parse_with_raw(raw) {
++                    Ok((_, (_, strings))) => json!({"textures":strings}),
++                    Err(_) => {
++                        status = "unresolved";
++                        json!({})
++                    }
++                },
++                NifBlock::BSTriShape(s) => {
++                    shape_fields(s.shader_property, s.alpha_property, s.av.object.name)
++                }
++                NifBlock::BSDynamicTriShape(s) => shape_fields(
++                    s.bs_tri_shape.shader_property,
++                    s.bs_tri_shape.alpha_property,
++                    s.bs_tri_shape.av.object.name,
++                ),
++                NifBlock::BSSubIndexTriShape(s) => shape_fields(
++                    s.bs_tri_shape.shader_property,
++                    s.bs_tri_shape.alpha_property,
++                    s.bs_tri_shape.av.object.name,
++                ),
++                NifBlock::BSLODTriShape(s) => shape_fields(
++                    s.bs_tri_shape.shader_property,
++                    s.bs_tri_shape.alpha_property,
++                    s.bs_tri_shape.av.object.name,
++                ),
++                NifBlock::NiTriShape(s) => {
++                    shape_fields(s.shader_property, s.alpha_property, s.name)
++                }
++                NifBlock::NiAlphaProperty(p) => {
++                    json!({"flags":p.flags.raw(),"threshold":p.threshold})
++                }
++                _ => {
++                    status = "unresolved";
++                    json!({})
++                }
++            },
++            _ => {
++                status = "unresolved";
++                json!({})
++            }
++        };
++        if status != "decoded" {
++            diagnostics.push(json!({"code":"RAW_BLOCK_UNAVAILABLE","block":index,"block_type":block_type,"detail":"decoder did not recover authored fields; no fallback values exported"}));
++        }
++        raw_blocks.push(RawBlock {
++            block: index as u32,
++            block_type,
++            status: status.into(),
++            fields,
++            block_byte_start: start as u64,
++            block_byte_end: (start + size) as u64,
++        });
++    }
++    let interpreted = tag_f32(serde_json::to_value(MeshConverter::inspect_nif_materials(
++        path,
++    )?)?);
++    Ok(MaterialInspection {
++        schema_version: 1,
++        asset_sha256: cache::hash_bytes(&bytes),
++        header: json!({"nif_version":format!("{:?}",header.nif_version),"user_version":header.user_version,"bethesda_version":header.bethesda_version,"block_count":header.block_count}),
++        raw_blocks,
++        interpreted,
++        diagnostics,
++    })
++}
++fn shape_fields(shader: u32, alpha: u32, name: u32) -> Value {
++    json!({"shader_property":shader,"alpha_property":alpha,"name_index":name})
++}
++/// Retain exact IEEE 754 f32 values, including nonfinite authored values.
++pub fn f32_value(value: f32) -> Value {
++    json!({"type":"f32","bits":format!("0x{:08x}",value.to_bits()),"display":value.to_string()})
++}
++fn tag_f32(v: Value) -> Value {
++    match v {
++        Value::Number(ref n) if n.is_f64() => f32_value(n.as_f64().expect("float") as f32),
++        Value::Array(a) => Value::Array(a.into_iter().map(tag_f32).collect()),
++        Value::Object(o) => Value::Object(o.into_iter().map(|(k, v)| (k, tag_f32(v))).collect()),
++        v => v,
++    }
++}
+diff --git a/crates/converter/tests/kg_materials.rs b/crates/converter/tests/kg_materials.rs
+new file mode 100644
+index 0000000..452312d
+--- /dev/null
++++ b/crates/converter/tests/kg_materials.rs
+@@ -0,0 +1,130 @@
++//! Actual parser/converter extraction tests; normalized JSON fixtures are not proof here.
++use converter::{mesh::MeshConverter, research};
++use dummy_content::nif::{self, ResearchMaterial, StaticShape};
++use serde_json::Value;
++fn fixture() -> Vec<u8> {
++    let positions = [[-1., -1., 0.], [1., -1., 0.], [0., 1., 0.]];
++    let normals = [[0., 0., 1.]; 3];
++    let uvs = [[0., 0.], [1., 0.], [0.5, 1.]];
++    let indices = [[0, 1, 2]];
++    let shape = StaticShape {
++        name: "duplicate",
++        positions: &positions,
++        normals: &normals,
++        uvs: &uvs,
++        indices: &indices,
++        diffuse: "textures/shared.dds",
++        normal_texture: "textures/shared.dds",
++    };
++    nif::research_material_shapes(&[
++        ResearchMaterial {
++            shape: shape.clone(),
++            shader_flags_2: 16,
++            glossiness: 150.,
++            emissive_multiple: -1.,
++        },
++        ResearchMaterial {
++            shape,
++            shader_flags_2: 0,
++            glossiness: 80.,
++            emissive_multiple: 1.,
++        },
++    ])
++    .unwrap()
++}
++fn glb_json(bytes: &[u8]) -> Value {
++    let size = u32::from_le_bytes(bytes[12..16].try_into().unwrap()) as usize;
++    serde_json::from_slice(&bytes[20..20 + size]).unwrap()
++}
++#[test]
++fn real_nif_material_roundtrip() {
++    let dir = tempfile::tempdir().unwrap();
++    let nif = dir.path().join("input.nif");
++    let glb = dir.path().join("meshes/output.glb");
++    std::fs::write(&nif, fixture()).unwrap();
++    let before = std::fs::read(&nif).unwrap();
++    let report = research::inspect_materials(&nif).unwrap();
++    assert_eq!(report.interpreted.as_array().unwrap().len(), 2);
++    let raw = report.raw_blocks.iter().find(|b| b.block == 2).unwrap();
++    assert_eq!(raw.fields["shader_flags_2"], 16);
++    assert_eq!(raw.fields["emissive_multiple"]["bits"], "0xbf800000");
++    assert_eq!(
++        report.interpreted[0]["disposition"]["material"]["emissive_multiple"]["bits"],
++        "0x00000000"
++    );
++    MeshConverter::convert_nif_to_glb(&nif, &glb).unwrap();
++    let published = std::fs::read(&glb).unwrap();
++    let json = glb_json(&published);
++    let materials = json["materials"].as_array().unwrap();
++    assert_eq!(materials.len(), 2);
++    assert!(materials.iter().any(|m| m["doubleSided"] == true));
++    assert!(materials.iter().any(|m| m.get("doubleSided").is_none()));
++    let blocks = materials
++        .iter()
++        .map(|m| {
++            m.pointer("/extras/openSkyrim/shapeBlock")
++                .unwrap()
++                .as_u64()
++                .unwrap()
++        })
++        .collect::<std::collections::BTreeSet<_>>();
++    assert_eq!(blocks, std::collections::BTreeSet::from([1, 4]));
++    assert!(
++        json["images"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .any(|i| i["uri"].as_str().unwrap().contains("opensky-srgb"))
++    );
++    assert!(
++        json["images"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .any(|i| !i["uri"].as_str().unwrap().contains("opensky-srgb"))
++    );
++    let after = research::inspect_materials(&nif).unwrap();
++    assert_eq!(report.asset_sha256, after.asset_sha256);
++    MeshConverter::convert_nif_to_glb(&nif, &glb).unwrap();
++    assert_eq!(std::fs::read(&glb).unwrap(), published);
++    assert_eq!(std::fs::read(&nif).unwrap(), before);
++}
++#[test]
++fn fallback_is_not_raw() {
++    let dir = tempfile::tempdir().unwrap();
++    let path = dir.path().join("input.nif");
++    let bytes = fixture();
++    std::fs::write(&path, &bytes).unwrap();
++    let report = research::inspect_materials(&path).unwrap();
++    assert!(report.raw_blocks.iter().all(|b| b.status == "decoded"));
++    let shader = report.raw_blocks.iter().find(|b| b.block == 2).unwrap();
++    let mut broken = bytes;
++    let start = shader.block_byte_start as usize;
++    let end = shader.block_byte_end as usize;
++    broken[start..end].fill(0xff);
++    std::fs::write(&path, broken).unwrap();
++    match research::inspect_materials(&path) {
++        Ok(report) => {
++            let raw = report.raw_blocks.iter().find(|b| b.block == 2).unwrap();
++            if raw.status != "decoded" {
++                assert_eq!(raw.fields, serde_json::json!({}));
++            } else {
++                assert_eq!(raw.fields["shader_flags_2"], u32::MAX);
++            }
++        }
++        Err(_) => { /* Invalid authored material is an extraction failure, not an empty success. */
++        }
++    }
++}
++#[test]
++fn parser_retains_original_texture_spelling() {
++    use project_wormhole_nif::bs::prelude::BSShaderTextureSet;
++    let original = "Textures\\Shared.DDS";
++    let mut raw = vec![];
++    raw.extend_from_slice(&1u32.to_le_bytes());
++    raw.extend_from_slice(&(original.len() as u32).to_le_bytes());
++    raw.extend_from_slice(original.as_bytes());
++    let (_, (parsed, spelling)) = BSShaderTextureSet::parse_with_raw(&raw).unwrap();
++    assert_eq!(spelling, [original]);
++    assert_ne!(parsed.textures[0].as_deref(), Some(original));
++}
+diff --git a/crates/dummy-content/examples/kg_material_fixture.rs b/crates/dummy-content/examples/kg_material_fixture.rs
+new file mode 100644
+index 0000000..8369511
+--- /dev/null
++++ b/crates/dummy-content/examples/kg_material_fixture.rs
+@@ -0,0 +1,58 @@
++//! Generate original two-shape research input for the real converter pipeline.
++use color_eyre::{Result, eyre::ensure};
++use dummy_content::{layout, nif};
++use std::path::PathBuf;
++fn main() -> Result<()> {
++    let path = std::env::args().nth(1).map(PathBuf::from).ok_or_else(|| {
++        color_eyre::eyre::eyre!("usage: kg_material_fixture <new-Data-directory>")
++    })?;
++    ensure!(!path.exists(), "fixture destination must be new");
++    std::fs::create_dir_all(&path)?;
++    layout::generate(
++        &path,
++        layout::DEFAULT_SEED,
++        layout::Formats {
++            dds: true,
++            pex: false,
++            nif: false,
++            bsa: false,
++            ba2: false,
++            esm: true,
++        },
++    )?;
++    let positions = [[-1., -1., 0.], [1., -1., 0.], [0., 1., 0.]];
++    let normals = [[0., 0., 1.]; 3];
++    let uvs = [[0., 0.], [1., 0.], [0.5, 1.]];
++    let indices = [[0, 1, 2]];
++    let shape = nif::StaticShape {
++        name: "duplicate",
++        positions: &positions,
++        normals: &normals,
++        uvs: &uvs,
++        indices: &indices,
++        diffuse: layout::GENERATED_DIFFUSE_PATH,
++        normal_texture: layout::GENERATED_DIFFUSE_PATH,
++    };
++    let second = nif::StaticShape {
++        normal_texture: "textures/missing_research_normal.dds",
++        ..shape.clone()
++    };
++    let bytes = nif::research_material_shapes(&[
++        nif::ResearchMaterial {
++            shape,
++            shader_flags_2: 16,
++            glossiness: 150.0,
++            emissive_multiple: -1.0,
++        },
++        nif::ResearchMaterial {
++            shape: second,
++            shader_flags_2: 0,
++            glossiness: 80.0,
++            emissive_multiple: 1.0,
++        },
++    ])?;
++    std::fs::create_dir_all(path.join("meshes"))?;
++    std::fs::write(path.join(layout::GENERATED_MODEL_PATH), bytes)?;
++    println!("original synthetic two-shape NIF and DDS/ESM input generated");
++    Ok(())
++}
+diff --git a/crates/dummy-content/src/nif.rs b/crates/dummy-content/src/nif.rs
+index 30c1e3a..bd5bd5e 100644
+--- a/crates/dummy-content/src/nif.rs
++++ b/crates/dummy-content/src/nif.rs
+@@ -110,6 +110,100 @@ pub fn static_shape(shape: &StaticShape<'_>) -> Result<Vec<u8>> {
+     Ok(bytes)
+ }
+ 
++/// Material values used only by original procedural research fixtures.
++#[derive(Debug, Clone)]
++pub struct ResearchMaterial<'a> {
++    /// Shape geometry and texture paths.
++    pub shape: StaticShape<'a>,
++    /// Original shader flag bitfield.
++    pub shader_flags_2: u32,
++    /// Original glossiness, before converter publication.
++    pub glossiness: f32,
++    /// Original emissive multiplier, including the static clamp case.
++    pub emissive_multiple: f32,
++}
++
++/// Generate up to 64 original shapes with distinct block identities and duplicate names.
++/// Uses the same serializer as `static_shape`; this does not change its fixture output.
++pub fn research_material_shapes(shapes: &[ResearchMaterial<'_>]) -> Result<Vec<u8>> {
++    ensure!(
++        !shapes.is_empty() && shapes.len() <= 64,
++        "select 1–64 research shapes"
++    );
++    for shape in shapes {
++        validate(&shape.shape)?;
++        ensure!(
++            shape.glossiness.is_finite() && shape.emissive_multiple.is_finite(),
++            "fixture values must be finite"
++        );
++    }
++    let mut root = Vec::new();
++    push_av_object(&mut root, NULL_REF);
++    push_u32(&mut root, shapes.len() as u32);
++    for i in 0..shapes.len() {
++        push_u32(&mut root, 1 + 3 * i as u32);
++    }
++    push_u32(&mut root, 0);
++    let mut blocks = vec![root];
++    let mut kinds = vec![0u16];
++    for (i, material) in shapes.iter().enumerate() {
++        let shape = triangle_shape_with_refs(&material.shape, i as u32, 2 + 3 * i as u32)?;
++        let shader = lighting_shader_property_with_values(
++            material.shader_flags_2,
++            material.glossiness,
++            material.emissive_multiple,
++            3 + 3 * i as u32,
++        );
++        blocks.extend([shape, shader, texture_set(&material.shape)?]);
++        kinds.extend([1, 2, 3]);
++    }
++    let types = [
++        "BSFadeNode",
++        "BSTriShape",
++        "BSLightingShaderProperty",
++        "BSShaderTextureSet",
++    ];
++    let mut bytes = Vec::new();
++    bytes.extend_from_slice(b"Gamebryo File Format, Version 20.2.0.7\n");
++    push_u32(&mut bytes, NIF_VERSION);
++    bytes.push(1);
++    push_u32(&mut bytes, USER_VERSION);
++    push_u32(&mut bytes, blocks.len() as u32);
++    push_u32(&mut bytes, BETHESDA_VERSION);
++    push_string8(&mut bytes, "OpenSkyrim original research fixture");
++    push_string8(&mut bytes, "");
++    push_string8(&mut bytes, "");
++    push_u16(&mut bytes, types.len() as u16);
++    for ty in types {
++        push_u32(&mut bytes, ty.len() as u32);
++        bytes.extend_from_slice(ty.as_bytes());
++    }
++    for kind in kinds {
++        push_u16(&mut bytes, kind);
++    }
++    for block in &blocks {
++        push_u32(&mut bytes, block.len() as u32);
++    }
++    push_u32(&mut bytes, shapes.len() as u32);
++    push_u32(
++        &mut bytes,
++        shapes
++            .iter()
++            .map(|s| s.shape.name.len() as u32)
++            .max()
++            .unwrap_or(0),
++    );
++    for shape in shapes {
++        push_u32(&mut bytes, shape.shape.name.len() as u32);
++        bytes.extend_from_slice(shape.shape.name.as_bytes());
++    }
++    push_u32(&mut bytes, 0);
++    for block in blocks {
++        bytes.extend_from_slice(&block);
++    }
++    Ok(bytes)
++}
++
+ fn validate(shape: &StaticShape<'_>) -> Result<()> {
+     ensure!(!shape.name.is_empty(), "NIF shape name is empty");
+     ensure!(
+@@ -185,6 +279,10 @@ fn fade_node() -> Vec<u8> {
+ }
+ 
+ fn triangle_shape(shape: &StaticShape<'_>) -> Result<Vec<u8>> {
++    triangle_shape_with_refs(shape, 0, 2)
++}
++
++fn triangle_shape_with_refs(shape: &StaticShape<'_>, name: u32, shader: u32) -> Result<Vec<u8>> {
+     let vertex_stride = usize::from(VERTEX_STRIDE) * 4;
+     let vertex_bytes = shape
+         .positions
+@@ -202,13 +300,13 @@ fn triangle_shape(shape: &StaticShape<'_>) -> Result<Vec<u8>> {
+ 
+     let (center, radius) = bounds(shape.positions);
+     let mut block = Vec::with_capacity(72 + 16 + 24 + data_size);
+-    push_av_object(&mut block, 0);
++    push_av_object(&mut block, name);
+     for value in center {
+         block.extend_from_slice(&value.to_le_bytes());
+     }
+     block.extend_from_slice(&radius.to_le_bytes());
+     push_u32(&mut block, NULL_REF);
+-    push_u32(&mut block, 2);
++    push_u32(&mut block, shader);
+     push_u32(&mut block, NULL_REF);
+     let descriptor =
+         u64::from(VERTEX_STRIDE) | (4 << 8) | (5 << 16) | (u64::from(VERTEX_FLAGS) << 44);
+@@ -250,26 +348,35 @@ fn triangle_shape(shape: &StaticShape<'_>) -> Result<Vec<u8>> {
+ }
+ 
+ fn lighting_shader_property() -> Vec<u8> {
++    lighting_shader_property_with_values(0, 80.0, 1.0, 3)
++}
++
++fn lighting_shader_property_with_values(
++    flags_2: u32,
++    glossiness: f32,
++    emissive_multiple: f32,
++    texture_set: u32,
++) -> Vec<u8> {
+     let mut block = Vec::with_capacity(100);
+     push_u32(&mut block, SHADER_TYPE_DEFAULT);
+     push_u32(&mut block, NULL_REF);
+     push_u32(&mut block, 0);
+     push_u32(&mut block, NULL_REF);
+     push_u32(&mut block, 0);
+-    push_u32(&mut block, 0);
++    push_u32(&mut block, flags_2);
+     push_f32(&mut block, 0.0);
+     push_f32(&mut block, 0.0);
+     push_f32(&mut block, 1.0);
+     push_f32(&mut block, 1.0);
+-    push_u32(&mut block, 3);
++    push_u32(&mut block, texture_set);
+     push_f32(&mut block, 0.0);
+     push_f32(&mut block, 0.0);
+     push_f32(&mut block, 0.0);
+-    push_f32(&mut block, 1.0);
++    push_f32(&mut block, emissive_multiple);
+     push_u32(&mut block, 0);
+     push_f32(&mut block, 1.0);
+     push_f32(&mut block, 0.0);
+-    push_f32(&mut block, 80.0);
++    push_f32(&mut block, glossiness);
+     push_f32(&mut block, 1.0);
+     push_f32(&mut block, 1.0);
+     push_f32(&mut block, 1.0);
+diff --git a/vendor/project-wormhole-nif/src/bs/shader_texture_set.rs b/vendor/project-wormhole-nif/src/bs/shader_texture_set.rs
+index 02c7fc4..cdb75d7 100644
+--- a/vendor/project-wormhole-nif/src/bs/shader_texture_set.rs
++++ b/vendor/project-wormhole-nif/src/bs/shader_texture_set.rs
+@@ -19,9 +19,18 @@ pub struct BSShaderTextureSet {
+ 
+ impl Parse<&[u8]> for BSShaderTextureSet {
+     fn parse(i: &[u8]) -> IResult<&[u8], Self> {
++        Self::parse_with_raw(i).map(|(remaining, (parsed, _))| (remaining, parsed))
++    }
++}
++
++impl BSShaderTextureSet {
++    /// Decode texture strings once, preserving original spelling alongside normalized slots.
++    /// Research callers must keep these stages distinct; normal parsing retains its output.
++    pub fn parse_with_raw(i: &[u8]) -> IResult<&[u8], (Self, Vec<String>)> {
+         let (i, string_count) = le_u32(i)?;
+         let (i, textures) = count(SizedString32::parse, string_count as usize)(i)?;
+ 
++        let raw_textures = textures.iter().map(|texture| texture.0.clone()).collect();
+         let fixed: Vec<Option<String>> = textures
+             .into_iter()
+             .map(|texture| {
+@@ -53,7 +62,7 @@ impl Parse<&[u8]> for BSShaderTextureSet {
+             specular: fixed.get(7).cloned().flatten(),
+         };
+ 
+-        Ok((i, tset))
++        Ok((i, (tset, raw_textures)))
+     }
+ }
+ 
+diff --git a/Cargo.lock b/Cargo.lock
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -2338,6 +2338,7 @@
+ dependencies = [
+  "basis-universal",
+  "cc",
++ "clap",
+  "color-eyre",
+  "crossbeam-channel",
+  "ddsfile",

@@ -1,0 +1,858 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:mudcrab:kg:bundle:1",
+  "title": "Mudcrab KG normalized bundle v1",
+  "description": "Contract for a single extraction snapshot. SPEC.md requires additional identity, cross-reference, span, dependency and policy checks.",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "mudcrab-kg-bundle"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "repository",
+            "binary",
+            "asset_collection",
+            "capture",
+            "notes",
+            "synthetic"
+          ]
+        },
+        "origin_uri": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "reviewed",
+            "restricted"
+          ]
+        },
+        "license_expression": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lineage_roots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "redistribution": {
+          "type": "string",
+          "enum": [
+            "with_notice",
+            "metadata_only",
+            "review_required"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "origin_uri",
+        "visibility",
+        "license_expression",
+        "lineage_roots",
+        "redistribution"
+      ],
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^snap_[a-f0-9]{64}$"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "extraction": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "configuration_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "scope_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "tool",
+            "version",
+            "configuration_sha256",
+            "scope_sha256"
+          ],
+          "additionalProperties": false
+        },
+        "scope": {
+          "$ref": "#/$defs/value"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^snap_[a-f0-9]{64}$"
+          },
+          "minItems": 0
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "reviewed",
+            "restricted"
+          ]
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "complete",
+                  "partial",
+                  "not_run",
+                  "unsupported"
+                ]
+              },
+              "detail": {
+                "type": "string"
+              },
+              "counts": {
+                "type": "object",
+                "properties": {
+                  "inputs_enumerated": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inputs_attempted": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "records_emitted": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inputs_failed": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inputs_skipped": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "inputs_enumerated",
+                  "inputs_attempted",
+                  "records_emitted",
+                  "inputs_failed",
+                  "inputs_skipped"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "status",
+              "detail",
+              "counts"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "revision",
+        "content_sha256",
+        "extraction",
+        "scope",
+        "dependencies",
+        "visibility",
+        "capabilities"
+      ],
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^art_[a-f0-9]{64}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\u0000).+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "media_type": {
+            "type": "string"
+          },
+          "byte_size": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "reviewed",
+              "restricted"
+            ]
+          },
+          "blob_sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "path",
+          "sha256",
+          "media_type",
+          "byte_size",
+          "visibility",
+          "blob_sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ev_[a-f0-9]{64}$"
+          },
+          "artifact_id": {
+            "type": "string",
+            "pattern": "^art_[a-f0-9]{64}$"
+          },
+          "locator": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "source_span"
+                  },
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\u0000).+$"
+                  },
+                  "start_byte": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "end_byte": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "start_line": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "end_line": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "encoding": {
+                    "type": "string",
+                    "enum": [
+                      "utf8_bytes"
+                    ]
+                  },
+                  "original_range": {
+                    "$ref": "#/$defs/value"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "path",
+                  "start_byte",
+                  "end_byte",
+                  "start_line",
+                  "end_line",
+                  "encoding"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "binary_address"
+                  },
+                  "module_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "space": {
+                    "type": "string"
+                  },
+                  "rva": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-f]+$"
+                  },
+                  "instruction_rva": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-f]+$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "module_sha256",
+                  "space",
+                  "rva"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "pcode"
+                  },
+                  "module_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "space": {
+                    "type": "string"
+                  },
+                  "function_rva": {
+                    "type": "string"
+                  },
+                  "instruction_rva": {
+                    "type": "string"
+                  },
+                  "sequence": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "style": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "module_sha256",
+                  "space",
+                  "function_rva",
+                  "instruction_rva",
+                  "sequence",
+                  "style"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "asset_field"
+                  },
+                  "asset_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "block": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "field": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "byte_start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "byte_end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "kind",
+                  "asset_sha256",
+                  "block",
+                  "field"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "json_pointer"
+                  },
+                  "pointer": {
+                    "type": "string",
+                    "pattern": "^(|/.*)$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "pointer"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "capture_event"
+                  },
+                  "capture_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "event_id": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "api": {
+                    "type": "string"
+                  },
+                  "stage": {
+                    "type": "string"
+                  },
+                  "binding": {
+                    "type": "string"
+                  },
+                  "resource_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "capture_sha256",
+                  "event_id",
+                  "api"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "observation"
+                  },
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "record_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "session_id",
+                  "record_id"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "note"
+                  },
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\u0000).+$"
+                  },
+                  "section": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "path",
+                  "section"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "method": {
+            "type": "string"
+          },
+          "provenance_class": {
+            "type": "string",
+            "enum": [
+              "extracted",
+              "community",
+              "observed",
+              "manual",
+              "hypothesis"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "reviewed",
+              "restricted"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "artifact_id",
+          "locator",
+          "method",
+          "provenance_class",
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^node_[a-f0-9]{64}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "SourceFile",
+              "DocumentSection",
+              "CodeSymbol",
+              "ExternalSymbol",
+              "BinaryFunction",
+              "DataType",
+              "TypeField",
+              "Concept",
+              "Asset",
+              "AssetBlock",
+              "AssetField",
+              "Material",
+              "TextureBinding",
+              "ConversionStep",
+              "ShaderModule",
+              "ShaderBinding",
+              "Capture",
+              "DrawEvent",
+              "GpuResource",
+              "RuntimeObservation"
+            ]
+          },
+          "logical_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "attributes": {
+            "$ref": "#/$defs/value"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^ev_[a-f0-9]{64}$"
+            },
+            "minItems": 1
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "reviewed",
+              "restricted"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "logical_key",
+          "display_name",
+          "attributes",
+          "evidence_ids",
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^as_[a-f0-9]{64}$"
+          },
+          "subject": {
+            "type": "string",
+            "pattern": "^node_[a-f0-9]{64}$"
+          },
+          "predicate": {
+            "type": "string",
+            "enum": [
+              "CONTAINS",
+              "DECLARES",
+              "DEFINES",
+              "HAS_FIELD",
+              "REFERENCES",
+              "CALLS_DIRECT",
+              "MAY_CALL",
+              "READS_FIELD",
+              "WRITES_FIELD",
+              "HAS_TYPE",
+              "INHERITS",
+              "HAS_VTABLE_SLOT",
+              "DOCUMENTS",
+              "NAMES",
+              "DESCRIBES_CONCEPT",
+              "USES_TEXTURE",
+              "HAS_MATERIAL",
+              "HAS_BINDING",
+              "INPUT_TO",
+              "PRODUCES",
+              "DERIVED_FROM",
+              "PRUNED_REFERENCE",
+              "HANDLES_CONCEPT",
+              "CORRESPONDS_TO",
+              "CAPTURED_IN",
+              "BINDS_RESOURCE",
+              "OBSERVED_AT",
+              "OBSERVED_CALL",
+              "IMPORTS",
+              "EVOLVES_TO"
+            ]
+          },
+          "object": {
+            "type": "string",
+            "pattern": "^node_[a-f0-9]{64}$"
+          },
+          "attributes": {
+            "$ref": "#/$defs/value"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^ev_[a-f0-9]{64}$"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "supports",
+                    "contradicts",
+                    "context"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "role"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "provenance_class": {
+            "type": "string",
+            "enum": [
+              "extracted",
+              "community",
+              "observed",
+              "manual",
+              "hypothesis"
+            ]
+          },
+          "initial_state": {
+            "type": "string",
+            "enum": [
+              "admitted",
+              "proposed"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "reviewed",
+              "restricted"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "subject",
+          "predicate",
+          "object",
+          "attributes",
+          "evidence",
+          "provenance_class",
+          "initial_state",
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "format",
+    "schema_version",
+    "source",
+    "snapshot",
+    "artifacts",
+    "evidence",
+    "nodes",
+    "assertions"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "value": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/value"
+          }
+        }
+      ]
+    }
+  }
+}

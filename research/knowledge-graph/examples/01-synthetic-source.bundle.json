@@ -1,0 +1,156 @@
+{
+  "format": "mudcrab-kg-bundle",
+  "schema_version": 1,
+  "source": {
+    "id": "synthetic-source",
+    "kind": "repository",
+    "origin_uri": "synthetic://synthetic-source",
+    "visibility": "public",
+    "license_expression": null,
+    "lineage_roots": [
+      "synthetic-source"
+    ],
+    "redistribution": "review_required"
+  },
+  "snapshot": {
+    "id": "snap_5540a69aa965083cbb0de1cbe7c56f7203fe2f48b9e21259ce37409901a77256",
+    "source_id": "synthetic-source",
+    "revision": "fixture-v1",
+    "content_sha256": "9b467b9284f37fbe45d8a482986ec2a765c4962e0ffb564cbdcfd260d74b22e8",
+    "extraction": {
+      "tool": "handoff-synthetic-generator",
+      "version": "1",
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "scope_sha256": "6329c5a030e2ccf2e96e8e2f2ac785cd323c7ca970112a6e8e84625b48c010ec"
+    },
+    "scope": {
+      "mode": "selected",
+      "synthetic": true,
+      "layer": "source_structure",
+      "paths": [
+        "fixtures/toy.rs"
+      ]
+    },
+    "dependencies": [],
+    "visibility": "public",
+    "capabilities": [
+      {
+        "name": "source_structure",
+        "status": "complete",
+        "detail": "Synthetic contract example only; not an actual tool export.",
+        "counts": {
+          "inputs_enumerated": 1,
+          "inputs_attempted": 1,
+          "records_emitted": 7,
+          "inputs_failed": 0,
+          "inputs_skipped": 0
+        }
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "art_c2239bdc78d83a696eac5133049c944d7755a263d207008c5d29fee3ced49ee8",
+      "path": "fixtures/toy.rs",
+      "sha256": "9b467b9284f37fbe45d8a482986ec2a765c4962e0ffb564cbdcfd260d74b22e8",
+      "media_type": "text/plain",
+      "byte_size": 119,
+      "visibility": "public",
+      "blob_sha256": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_5218d75be317922761cbdbcf556491f115b1911ef4ca8ef638c1bcb9a2196ca0",
+      "artifact_id": "art_c2239bdc78d83a696eac5133049c944d7755a263d207008c5d29fee3ced49ee8",
+      "locator": {
+        "kind": "source_span",
+        "path": "fixtures/toy.rs",
+        "start_byte": 0,
+        "end_byte": 119,
+        "start_line": 1,
+        "end_line": 2,
+        "encoding": "utf8_bytes"
+      },
+      "method": "synthetic_example",
+      "provenance_class": "extracted",
+      "visibility": "public"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node_466e938bc5991dff7d7feba7f2aa82d3b6a0c8be5e52de0dbc4052f36b4a9a7a",
+      "kind": "SourceFile",
+      "logical_key": "fixtures/toy.rs",
+      "display_name": "toy.rs",
+      "attributes": {
+        "synthetic": true
+      },
+      "evidence_ids": [
+        "ev_5218d75be317922761cbdbcf556491f115b1911ef4ca8ef638c1bcb9a2196ca0"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_fbf5ff2e94bdba2b1fbc5bf7cb66418e53e95416cb2f72d08a6c282db09428cc",
+      "kind": "CodeSymbol",
+      "logical_key": "fixtures/toy.rs::toy_double_sided",
+      "display_name": "toy_double_sided",
+      "attributes": {
+        "language": "rust",
+        "resolution": "syntactic"
+      },
+      "evidence_ids": [
+        "ev_5218d75be317922761cbdbcf556491f115b1911ef4ca8ef638c1bcb9a2196ca0"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "node_11770b4099a088d26368b817bc1e0522a22be9e4af5bc16aff8d563c2c0fa353",
+      "kind": "Concept",
+      "logical_key": "skyrim.material.double_sided",
+      "display_name": "Double-sided material concept",
+      "attributes": {
+        "synthetic_demo": true
+      },
+      "evidence_ids": [
+        "ev_5218d75be317922761cbdbcf556491f115b1911ef4ca8ef638c1bcb9a2196ca0"
+      ],
+      "visibility": "public"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "as_b5db50b22218b116313b454ed7ef74c62a2948e9f18d4e6f6fc7a74e3ca8a535",
+      "subject": "node_466e938bc5991dff7d7feba7f2aa82d3b6a0c8be5e52de0dbc4052f36b4a9a7a",
+      "predicate": "DECLARES",
+      "object": "node_fbf5ff2e94bdba2b1fbc5bf7cb66418e53e95416cb2f72d08a6c282db09428cc",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_5218d75be317922761cbdbcf556491f115b1911ef4ca8ef638c1bcb9a2196ca0",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "public"
+    },
+    {
+      "id": "as_f100fb0aba6a64d6b34b63f49fc9ad0ffae95ff5d425273475782ad748c8821d",
+      "subject": "node_fbf5ff2e94bdba2b1fbc5bf7cb66418e53e95416cb2f72d08a6c282db09428cc",
+      "predicate": "HANDLES_CONCEPT",
+      "object": "node_11770b4099a088d26368b817bc1e0522a22be9e4af5bc16aff8d563c2c0fa353",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_5218d75be317922761cbdbcf556491f115b1911ef4ca8ef638c1bcb9a2196ca0",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "manual",
+      "initial_state": "proposed",
+      "visibility": "public"
+    }
+  ]
+}

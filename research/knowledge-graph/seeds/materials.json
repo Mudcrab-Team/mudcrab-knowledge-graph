@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "source": "mudcrab",
+  "revision_policy": "resolve_against_exact_indexed_revision",
+  "mappings": [
+    {
+      "concept": "skyrim.material.double_sided",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "SLSF2_DOUBLE_SIDED",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "skyrim.material.double_sided",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "build_lighting_material",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "skyrim.material.double_sided",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "publish_material",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "skyrim.material.texture_slot",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "lighting_texture_slots",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "skyrim.material.texture_slot",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "TextureRegistry",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "skyrim.material.glossiness",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "publish_material",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "skyrim.material.emission",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "build_lighting_material",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "mudcrab.material.publication",
+      "path": "crates/converter/src/material.rs",
+      "symbol": "publish_gltf_materials",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "mudcrab.render.terrain",
+      "path": "crates/engine/src/render.rs",
+      "symbol": "TerrainMaterial",
+      "evidence_selector": "entire_declaration"
+    },
+    {
+      "concept": "mudcrab.render.water",
+      "path": "crates/engine/src/render.rs",
+      "symbol": "WaterMaterial",
+      "evidence_selector": "entire_declaration"
+    }
+  ]
+}

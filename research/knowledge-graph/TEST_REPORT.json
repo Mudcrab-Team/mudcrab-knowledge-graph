@@ -1,0 +1,36 @@
+{
+  "record_scope": "Historical Mudcrab integration worktree; not current standalone verification",
+  "workspace_all_targets": {
+    "passed": 862,
+    "failed": 0,
+    "ignored": 18,
+    "targets": 48
+  },
+  "workspace_doctests": {
+    "passed": 0,
+    "failed": 0,
+    "ignored": 0,
+    "targets": 6
+  },
+  "graph_all_features": {
+    "passed": 26,
+    "failed": 0
+  },
+  "python_api_tests": {
+    "passed": 8,
+    "failed": 0,
+    "installed_application_smokes": false
+  },
+  "contracts": {
+    "passed": 18,
+    "failed": 0
+  },
+  "release_dummy_performance": {
+    "passed": 4,
+    "failed": 0
+  },
+  "workspace_clippy": "passed with -D warnings",
+  "fmt": "passed",
+  "cargo_nextest": "unavailable; documented cargo test fallback used",
+  "cargo_audit": "unavailable; no audit result claimed"
+}

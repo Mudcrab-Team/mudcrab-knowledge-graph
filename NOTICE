@@ -1,0 +1,20 @@
+Mudcrab Knowledge Graph
+
+Original graph code and documentation: MIT OR Apache-2.0.
+Copyright (c) 2026 OpenSkyrim Contributors and Mudcrab contributors.
+The original LICENSE-MIT and LICENSE-APACHE notices are retained.
+
+This repository was extracted from the Mudcrab implementation tree at commit
+65a77c3 (full commit and extraction details are in docs/provenance.md), based on
+reviewed commit b2758e522dfbf273f641e9c787e6cbbcd019495c.
+
+integrations/mudcrab/material-export.patch contains changes and context from
+Mudcrab converter/original fixture sources (MIT OR Apache-2.0) and from
+project-wormhole-nif (GPL-3.0-or-later). The latter component is the diff for
+vendor/project-wormhole-nif/src/bs/shader_texture_set.rs. Its license is preserved
+in integrations/mudcrab/LICENSE-GPL-3.0; the upstream project attribution and
+version are documented in integrations/mudcrab/README.md. The graph core does
+not link or depend on that component. Root graph licenses do not relicense it.
+
+Cargo.lock dependencies and optional analyzer installations retain their own
+licenses. No license here grants rights to third-party assets or trademarks.

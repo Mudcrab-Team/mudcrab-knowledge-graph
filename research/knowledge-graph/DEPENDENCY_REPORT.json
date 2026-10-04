@@ -1,0 +1,70 @@
+{
+  "record_scope": "Historical Mudcrab integration worktree; not current standalone verification",
+  "base": "b2758e522dfbf273f641e9c787e6cbbcd019495c",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+  "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+  "kache": "kache 0.26.3",
+  "existing_package_versions_removed": [],
+  "new_package_versions": 59,
+  "graph_dependency_independence": true,
+  "external_api_targets": {
+    "Ghidra": "11.4",
+    "PyGhidra": "2.2",
+    "RenderDoc": "1.43",
+    "application_smokes": "not_run; required Python modules and analyzed project/capture unavailable"
+  },
+  "locked_versions_for_direct_dependency_names": {
+    "serde": [
+      "1.0.228"
+    ],
+    "serde_json": [
+      "1.0.150"
+    ],
+    "sha2": [
+      "0.10.9"
+    ],
+    "rusqlite": [
+      "0.32.1"
+    ],
+    "clap": [
+      "4.6.7"
+    ],
+    "thiserror": [
+      "1.0.69",
+      "2.0.18"
+    ],
+    "jsonschema": [
+      "0.33.0"
+    ],
+    "scip": [
+      "0.8.1"
+    ],
+    "protobuf": [
+      "3.7.2"
+    ],
+    "tree-sitter": [
+      "0.25.10"
+    ],
+    "tree-sitter-rust": [
+      "0.24.2"
+    ],
+    "tree-sitter-cpp": [
+      "0.23.4"
+    ],
+    "roxmltree": [
+      "0.20.0"
+    ],
+    "toml": [
+      "0.8.23"
+    ],
+    "rmcp": [
+      "0.8.5"
+    ],
+    "schemars": [
+      "1.2.2"
+    ],
+    "tokio": [
+      "1.53.1"
+    ]
+  }
+}

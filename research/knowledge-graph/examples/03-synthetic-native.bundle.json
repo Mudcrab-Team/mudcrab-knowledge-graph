@@ -1,0 +1,149 @@
+{
+  "format": "mudcrab-kg-bundle",
+  "schema_version": 1,
+  "source": {
+    "id": "synthetic-native",
+    "kind": "binary",
+    "origin_uri": "synthetic://synthetic-native",
+    "visibility": "restricted",
+    "license_expression": null,
+    "lineage_roots": [
+      "synthetic-native"
+    ],
+    "redistribution": "review_required"
+  },
+  "snapshot": {
+    "id": "snap_46ec77a998650fbb5140bca0033f9d21e76937e91065649b7cc371576470387f",
+    "source_id": "synthetic-native",
+    "revision": "fixture-analysis-v1",
+    "content_sha256": "ff7100e137c300d6c4d0a4c1712b2ce478734799d878bdff3eaeb21bfaa0a1bb",
+    "extraction": {
+      "tool": "handoff-synthetic-generator",
+      "version": "1",
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "scope_sha256": "8b1b7f2ccd1c69bc536d28f662940a7fd55529b3f75d5d7fec042ce08e7223c7"
+    },
+    "scope": {
+      "mode": "selected",
+      "synthetic": true,
+      "layer": "ghidra_normalized",
+      "paths": [
+        "fixtures/native-analysis.txt"
+      ]
+    },
+    "dependencies": [
+      "snap_5540a69aa965083cbb0de1cbe7c56f7203fe2f48b9e21259ce37409901a77256"
+    ],
+    "visibility": "restricted",
+    "capabilities": [
+      {
+        "name": "ghidra_normalized",
+        "status": "complete",
+        "detail": "Synthetic contract example only; not an actual tool export.",
+        "counts": {
+          "inputs_enumerated": 1,
+          "inputs_attempted": 1,
+          "records_emitted": 6,
+          "inputs_failed": 0,
+          "inputs_skipped": 0
+        }
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "art_6969a0be862be81e2d16bde940a2f3acd13671ab40dd6f200e14f7e5cf87ac4c",
+      "path": "fixtures/native-analysis.txt",
+      "sha256": "ff7100e137c300d6c4d0a4c1712b2ce478734799d878bdff3eaeb21bfaa0a1bb",
+      "media_type": "text/plain",
+      "byte_size": 80,
+      "visibility": "restricted",
+      "blob_sha256": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_2160fa9080bb29735ede2c9d0acce9dc6b36bff1ea9820b1168e9c287944af73",
+      "artifact_id": "art_6969a0be862be81e2d16bde940a2f3acd13671ab40dd6f200e14f7e5cf87ac4c",
+      "locator": {
+        "kind": "binary_address",
+        "module_sha256": "7d418ac1f27c928c86b4a298d42f2bc2dbd0869f804dadd51c23627558cc34ff",
+        "space": "ram",
+        "rva": "0x1000"
+      },
+      "method": "synthetic_not_a_ghidra_export",
+      "provenance_class": "extracted",
+      "visibility": "restricted"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node_c23d7674303ffaedec88b84f8bc2cf6f072474b58b0196096474b94262f4a600",
+      "kind": "BinaryFunction",
+      "logical_key": "7d418ac1f27c928c86b4a298d42f2bc2dbd0869f804dadd51c23627558cc34ff|ram|0x1000",
+      "display_name": "toy_native_flag",
+      "attributes": {
+        "synthetic": true,
+        "module_sha256": "7d418ac1f27c928c86b4a298d42f2bc2dbd0869f804dadd51c23627558cc34ff",
+        "rva": "0x1000"
+      },
+      "evidence_ids": [
+        "ev_2160fa9080bb29735ede2c9d0acce9dc6b36bff1ea9820b1168e9c287944af73"
+      ],
+      "visibility": "restricted"
+    },
+    {
+      "id": "node_b1df5bdb01bff0133e1b9bdc38ed2124c97cb46fd4849361cfded8489635f222",
+      "kind": "BinaryFunction",
+      "logical_key": "7d418ac1f27c928c86b4a298d42f2bc2dbd0869f804dadd51c23627558cc34ff|ram|0x1100",
+      "display_name": "toy_callee",
+      "attributes": {
+        "synthetic": true,
+        "module_sha256": "7d418ac1f27c928c86b4a298d42f2bc2dbd0869f804dadd51c23627558cc34ff",
+        "rva": "0x1100"
+      },
+      "evidence_ids": [
+        "ev_2160fa9080bb29735ede2c9d0acce9dc6b36bff1ea9820b1168e9c287944af73"
+      ],
+      "visibility": "restricted"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "as_5f01e928b71a261752b436c752a860b8cb4a3fb31ad25e777ce7b46eb178b027",
+      "subject": "node_c23d7674303ffaedec88b84f8bc2cf6f072474b58b0196096474b94262f4a600",
+      "predicate": "CALLS_DIRECT",
+      "object": "node_b1df5bdb01bff0133e1b9bdc38ed2124c97cb46fd4849361cfded8489635f222",
+      "attributes": {
+        "callsite_rva": "0x1008"
+      },
+      "evidence": [
+        {
+          "id": "ev_2160fa9080bb29735ede2c9d0acce9dc6b36bff1ea9820b1168e9c287944af73",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "extracted",
+      "initial_state": "admitted",
+      "visibility": "restricted"
+    },
+    {
+      "id": "as_bbf29abec1a32e1fc2cbaf33316103223d8a75061b4e4aeddb5bb5efcc42cff6",
+      "subject": "node_c23d7674303ffaedec88b84f8bc2cf6f072474b58b0196096474b94262f4a600",
+      "predicate": "CORRESPONDS_TO",
+      "object": "node_fbf5ff2e94bdba2b1fbc5bf7cb66418e53e95416cb2f72d08a6c282db09428cc",
+      "attributes": {
+        "explanation": "Synthetic candidate only; not equivalent."
+      },
+      "evidence": [
+        {
+          "id": "ev_2160fa9080bb29735ede2c9d0acce9dc6b36bff1ea9820b1168e9c287944af73",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "hypothesis",
+      "initial_state": "proposed",
+      "visibility": "restricted"
+    }
+  ]
+}

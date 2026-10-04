@@ -1,0 +1,1 @@
+Original synthetic native-analysis observation; NOT Skyrim bytes or pseudocode.

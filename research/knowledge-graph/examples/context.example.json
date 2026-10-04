@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "name": "synthetic-materials",
+  "snapshot_ids": [
+    "snap_5540a69aa965083cbb0de1cbe7c56f7203fe2f48b9e21259ce37409901a77256",
+    "snap_8ea91bbd97bdcd546a62766c34322e676c61ef62c22be20a6433787ceffbb71e",
+    "snap_46ec77a998650fbb5140bca0033f9d21e76937e91065649b7cc371576470387f",
+    "snap_d0df9efaf5856c2e5330e87e29f9e876d891614e550e5b786644f6dd9b7e833d"
+  ],
+  "policy": "research-local",
+  "notes": "Synthetic contract examples only. Replace with IDs returned by actual ingests; do not treat these as recovered Skyrim relationships."
+}

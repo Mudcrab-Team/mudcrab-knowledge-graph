@@ -1,0 +1,176 @@
+{
+  "format": "mudcrab-kg-bundle",
+  "schema_version": 1,
+  "source": {
+    "id": "synthetic-capture",
+    "kind": "capture",
+    "origin_uri": "synthetic://synthetic-capture",
+    "visibility": "restricted",
+    "license_expression": null,
+    "lineage_roots": [
+      "synthetic-capture"
+    ],
+    "redistribution": "review_required"
+  },
+  "snapshot": {
+    "id": "snap_d0df9efaf5856c2e5330e87e29f9e876d891614e550e5b786644f6dd9b7e833d",
+    "source_id": "synthetic-capture",
+    "revision": "fixture-v1",
+    "content_sha256": "8189ac02f150c47f66773ab38ef682601e6ee4f1d6f98748e31f5b0ab58eb306",
+    "extraction": {
+      "tool": "handoff-synthetic-generator",
+      "version": "1",
+      "configuration_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "scope_sha256": "3b803c203d9932a2eb7a9e9e2edd62d2bcc0a4ef5ff1c30f5384fd473dfd506c"
+    },
+    "scope": {
+      "mode": "selected",
+      "synthetic": true,
+      "layer": "renderdoc_normalized",
+      "paths": [
+        "fixtures/capture-observation.txt"
+      ]
+    },
+    "dependencies": [
+      "snap_8ea91bbd97bdcd546a62766c34322e676c61ef62c22be20a6433787ceffbb71e"
+    ],
+    "visibility": "restricted",
+    "capabilities": [
+      {
+        "name": "renderdoc_normalized",
+        "status": "complete",
+        "detail": "Synthetic contract example only; not an actual tool export.",
+        "counts": {
+          "inputs_enumerated": 1,
+          "inputs_attempted": 1,
+          "records_emitted": 8,
+          "inputs_failed": 0,
+          "inputs_skipped": 0
+        }
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "art_2bc01fb54f0224fc96131ef7064b2920ea8b63a16464d6256ebf0dd7da4dcc2a",
+      "path": "fixtures/capture-observation.txt",
+      "sha256": "8189ac02f150c47f66773ab38ef682601e6ee4f1d6f98748e31f5b0ab58eb306",
+      "media_type": "text/plain",
+      "byte_size": 56,
+      "visibility": "restricted",
+      "blob_sha256": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84",
+      "artifact_id": "art_2bc01fb54f0224fc96131ef7064b2920ea8b63a16464d6256ebf0dd7da4dcc2a",
+      "locator": {
+        "kind": "capture_event",
+        "capture_sha256": "49a2ecf2511c89bad91d0dddec45d3cddedd30bd8acfd6d7218d1dbd2fb814d4",
+        "event_id": 25,
+        "api": "D3D11",
+        "stage": "pixel",
+        "binding": "t0",
+        "resource_id": "synthetic_resource_1"
+      },
+      "method": "synthetic_not_a_renderdoc_export",
+      "provenance_class": "observed",
+      "visibility": "restricted"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node_b989f9c2f7131010b4910e0f088e4294b30ee9f46fdbbaa31a5d97c7e0f17cf1",
+      "kind": "Capture",
+      "logical_key": "49a2ecf2511c89bad91d0dddec45d3cddedd30bd8acfd6d7218d1dbd2fb814d4",
+      "display_name": "Synthetic capture",
+      "attributes": {
+        "synthetic": true
+      },
+      "evidence_ids": [
+        "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84"
+      ],
+      "visibility": "restricted"
+    },
+    {
+      "id": "node_a6e244489efb213e1df7b67113a109e4a6fb6ce75c7c2db00645df1c0ee22d99",
+      "kind": "DrawEvent",
+      "logical_key": "49a2ecf2511c89bad91d0dddec45d3cddedd30bd8acfd6d7218d1dbd2fb814d4|25",
+      "display_name": "Synthetic draw 25",
+      "attributes": {
+        "event_id": 25,
+        "api": "D3D11"
+      },
+      "evidence_ids": [
+        "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84"
+      ],
+      "visibility": "restricted"
+    },
+    {
+      "id": "node_d6f601143558d6f48d60a76881a80ba4f71d922e9714c9e00bd771e63c83b6b1",
+      "kind": "GpuResource",
+      "logical_key": "49a2ecf2511c89bad91d0dddec45d3cddedd30bd8acfd6d7218d1dbd2fb814d4|synthetic_resource_1",
+      "display_name": "Synthetic pixel resource",
+      "attributes": {
+        "capture_local_id": "synthetic_resource_1"
+      },
+      "evidence_ids": [
+        "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84"
+      ],
+      "visibility": "restricted"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "as_6ce8dfdb1efe17c166141531748baf45e8e2d0cb8e5717053c261bf330973a56",
+      "subject": "node_a6e244489efb213e1df7b67113a109e4a6fb6ce75c7c2db00645df1c0ee22d99",
+      "predicate": "CAPTURED_IN",
+      "object": "node_b989f9c2f7131010b4910e0f088e4294b30ee9f46fdbbaa31a5d97c7e0f17cf1",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "observed",
+      "initial_state": "admitted",
+      "visibility": "restricted"
+    },
+    {
+      "id": "as_d54ae15018bf1a75ed2b5c529fa4514fc763fcfb652df87b0d1cce886407ce5c",
+      "subject": "node_a6e244489efb213e1df7b67113a109e4a6fb6ce75c7c2db00645df1c0ee22d99",
+      "predicate": "BINDS_RESOURCE",
+      "object": "node_d6f601143558d6f48d60a76881a80ba4f71d922e9714c9e00bd771e63c83b6b1",
+      "attributes": {},
+      "evidence": [
+        {
+          "id": "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "observed",
+      "initial_state": "admitted",
+      "visibility": "restricted"
+    },
+    {
+      "id": "as_708015971f3305f8b3a3d3ba9c7030df299b3a07053c03274556c22dd62bbdf5",
+      "subject": "node_d6f601143558d6f48d60a76881a80ba4f71d922e9714c9e00bd771e63c83b6b1",
+      "predicate": "CORRESPONDS_TO",
+      "object": "node_fb2a1d40b83e6f84e380dfe26b5c4dfd142a82bbd4b03a81771b72d0fdd3dbca",
+      "attributes": {
+        "explanation": "Candidate demo; no asset-to-resource proof."
+      },
+      "evidence": [
+        {
+          "id": "ev_c11913b74f9aa17d69be3b3a178081b578741bf080eb3fce0852baf7d1ae5c84",
+          "role": "supports"
+        }
+      ],
+      "provenance_class": "hypothesis",
+      "initial_state": "proposed",
+      "visibility": "restricted"
+    }
+  ]
+}

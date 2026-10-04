@@ -1,0 +1,69 @@
+{
+  "repository": "Mudcrab-Team/mudcrab",
+  "reviewed_commit": "b2758e522dfbf273f641e9c787e6cbbcd019495c",
+  "review_type": "targeted connector file reads and code search; not a compiled checkout",
+  "observed_versions": {
+    "bevy": "0.19.0",
+    "rusqlite": "0.32",
+    "converter_schema": 16,
+    "world_database_schema": 5,
+    "cell_cache": 3
+  },
+  "files": [
+    {
+      "path": "Cargo.toml",
+      "git_blob_sha1": "a8df2d7226df58d0056619599d7c983935bbbde1",
+      "reviewed_lines": "full"
+    },
+    {
+      "path": "crates/converter/src/material.rs",
+      "git_blob_sha1": "9ad73b312efd085164840378e2a861e531f405c4",
+      "reviewed_lines": "1-300,370-605,760-1030"
+    },
+    {
+      "path": "crates/converter/src/mesh.rs",
+      "git_blob_sha1": "b27602a911df9fe7b890f36ee8de0f32d5bc22fc",
+      "reviewed_lines": "1-220"
+    },
+    {
+      "path": "crates/converter/src/bin/nif-audit.rs",
+      "git_blob_sha1": "7ec721959ad4494688595a99f42301f76b4b73b6",
+      "reviewed_lines": "1-230"
+    },
+    {
+      "path": "crates/converter/src/cache.rs",
+      "git_blob_sha1": "cbfcfc68cf4d06650efac1f29777ca0d1ac70ba8",
+      "reviewed_lines": "1-210"
+    },
+    {
+      "path": "crates/shared/src/lib.rs",
+      "git_blob_sha1": "3429634e3662d277ae196668dcd7e05842ba30d0",
+      "reviewed_lines": "full"
+    },
+    {
+      "path": "crates/engine/src/streaming.rs",
+      "git_blob_sha1": "fbe8970984fa061d8236abafe2a10f367d1d6b8e",
+      "reviewed_lines": "1-180"
+    },
+    {
+      "path": "crates/engine/src/render.rs",
+      "git_blob_sha1": "9d60e50cd30c4aa3dd5563ef2299a14ca616c565",
+      "reviewed_lines": "1-175"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "git_blob_sha1": "e35dbd0f6273d3ab162fdc8e694d8c3ad78e8ff8",
+      "reviewed_lines": "50-155"
+    },
+    {
+      "path": "LEGAL.md",
+      "git_blob_sha1": "acd0f5d673e07ea4df425964a56026485dcc8c70",
+      "reviewed_lines": "full"
+    }
+  ],
+  "limitations": [
+    "No original Skyrim executable, asset set or capture was analyzed.",
+    "No Mudcrab build or new Rust implementation was run.",
+    "External tools were inspected through primary documentation; version compatibility must be tested by the implementation agent."
+  ]
+}
