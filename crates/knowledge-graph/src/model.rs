@@ -46,6 +46,8 @@ pub enum NodeKind {
     GpuResource,
     #[serde(rename = "RuntimeObservation")]
     RuntimeObservation,
+    #[serde(rename = "ResearchClaim")]
+    ResearchClaim,
 }
 impl NodeKind {
     /// Exact ontology wire name.
@@ -71,6 +73,7 @@ impl NodeKind {
             Self::DrawEvent => "DrawEvent",
             Self::GpuResource => "GpuResource",
             Self::RuntimeObservation => "RuntimeObservation",
+            Self::ResearchClaim => "ResearchClaim",
         }
     }
 }
@@ -137,6 +140,16 @@ pub enum Predicate {
     Imports,
     #[serde(rename = "EVOLVES_TO")]
     EvolvesTo,
+    #[serde(rename = "SUPPORTS")]
+    Supports,
+    #[serde(rename = "CHALLENGES")]
+    Challenges,
+    #[serde(rename = "DUPLICATES")]
+    Duplicates,
+    #[serde(rename = "RELATED_TO")]
+    RelatedTo,
+    #[serde(rename = "DEPENDS_ON")]
+    DependsOn,
 }
 impl Predicate {
     /// Exact ontology wire name.
@@ -172,6 +185,11 @@ impl Predicate {
             Self::ObservedCall => "OBSERVED_CALL",
             Self::Imports => "IMPORTS",
             Self::EvolvesTo => "EVOLVES_TO",
+            Self::Supports => "SUPPORTS",
+            Self::Challenges => "CHALLENGES",
+            Self::Duplicates => "DUPLICATES",
+            Self::RelatedTo => "RELATED_TO",
+            Self::DependsOn => "DEPENDS_ON",
         }
     }
 }

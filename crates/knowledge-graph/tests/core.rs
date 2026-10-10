@@ -679,3 +679,142 @@ fn streaming_fingerprint_matches_canonical_bundle() {
     b.nodes.reverse();
     assert_eq!(streamed, bundle::fingerprint(&b).unwrap());
 }
+
+#[test]
+fn research_claim_predicates_validate_and_query() {
+    let source = Source {
+        id: "test-corpus".into(),
+        kind: "notes".into(),
+        origin_uri: "notes:test-corpus".into(),
+        visibility: Visibility::Public,
+        license_expression: None,
+        lineage_roots: vec!["test-corpus".into()],
+        redistribution: "with_notice".into(),
+    };
+    let text = "{\"claims\": [{\"id\": \"T01\"},{\"id\": \"T02\"}]}";
+    let mut b = ExtractionBuilder::new(
+        source,
+        "corpus-v1",
+        &ids::sha256(text.as_bytes()),
+        "test-corpus-export",
+        json!({}),
+        json!({"ledgers":["ledger.json"]}),
+        vec![],
+    )
+    .unwrap();
+    let a = b
+        .artifact("ledger.json", "application/json", text.as_bytes().to_vec())
+        .unwrap();
+    let e = b.evidence(&a, json!({"kind":"source_span","path":"ledger.json","start_byte":0,"end_byte":text.len(),"start_line":1,"end_line":1,"encoding":"utf8_bytes"}), "literal", Provenance::Extracted).unwrap();
+    let section = b.node(
+        NodeKind::DocumentSection,
+        "ledger.json",
+        "ledger.json",
+        json!({}),
+        std::slice::from_ref(&e),
+    );
+    let c1 = b.node(NodeKind::ResearchClaim, "T01", "T01", json!({"note_id":"TN","domain":"native-lighting","assessment":"partially_supported","scope":"test"}), std::slice::from_ref(&e));
+    let c2 = b.node(NodeKind::ResearchClaim, "T02", "T02", json!({"note_id":"TN","domain":"native-lighting","assessment":"supported_static","scope":"test"}), std::slice::from_ref(&e));
+    let k1 = b.node(
+        NodeKind::Concept,
+        "topic-a",
+        "topic a",
+        json!({"domain_layer":"test"}),
+        std::slice::from_ref(&e),
+    );
+    let k2 = b.node(
+        NodeKind::Concept,
+        "topic-b",
+        "topic b",
+        json!({"domain_layer":"test"}),
+        std::slice::from_ref(&e),
+    );
+    b.edge(
+        &section,
+        Predicate::Documents,
+        &c1,
+        json!({}),
+        std::slice::from_ref(&e),
+        Provenance::Extracted,
+    )
+    .unwrap();
+    b.edge(
+        &c1,
+        Predicate::Supports,
+        &c2,
+        json!({}),
+        std::slice::from_ref(&e),
+        Provenance::Manual,
+    )
+    .unwrap();
+    b.edge(
+        &c1,
+        Predicate::DescribesConcept,
+        &k1,
+        json!({"basis":"test association"}),
+        std::slice::from_ref(&e),
+        Provenance::Manual,
+    )
+    .unwrap();
+    b.edge(
+        &c1,
+        Predicate::CorrespondsTo,
+        &k1,
+        json!({"traced_path":"test.rs"}),
+        std::slice::from_ref(&e),
+        Provenance::Manual,
+    )
+    .unwrap();
+    b.edge(
+        &k1,
+        Predicate::DependsOn,
+        &k2,
+        json!({"label":"test dependency"}),
+        std::slice::from_ref(&e),
+        Provenance::Manual,
+    )
+    .unwrap();
+    let (bundle, bytes) = (b.bundle, b.bytes);
+    bundle::validate(&bundle, &Default::default(), &bytes).unwrap();
+    let dir = tempfile::tempdir().unwrap();
+    let mut s = Store::init(dir.path()).unwrap();
+    s.ingest_bytes(&bundle, &bytes).unwrap();
+    for a in bundle.assertions.iter().skip(1) {
+        s.review(
+            &a.id,
+            "test-receipt",
+            "admitted",
+            "curated fixture judgment",
+        )
+        .unwrap();
+    }
+    let ctx = context(&mut s, &bundle, "public");
+    let q = Query::new(&s, ctx);
+    let n = q
+        .neighbors(NeighborsInput {
+            node_id: c1.clone(),
+            direction: "out".into(),
+            predicates: vec![],
+            limit: 20,
+            cursor: None,
+        })
+        .unwrap();
+    let preds: Vec<String> = n.result["assertions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|a| a["assertion"]["predicate"].as_str().unwrap().to_owned())
+        .collect();
+    assert!(preds.contains(&"SUPPORTS".to_owned()));
+    assert!(preds.contains(&"DESCRIBES_CONCEPT".to_owned()));
+    assert!(preds.contains(&"CORRESPONDS_TO".to_owned()));
+    // Domain violations must fail validation with corrected identities.
+    let mut bad = bundle.clone();
+    bad.assertions[1].subject = k1.clone();
+    bad.assertions[1].id = bad.assertions[1].expected_id(&bad.snapshot.id).unwrap();
+    assert!(bundle::validate(&bad, &Default::default(), &bytes).is_err());
+    let mut bad = bundle.clone();
+    bad.assertions[4].subject = c1.clone();
+    bad.assertions[4].id = bad.assertions[4].expected_id(&bad.snapshot.id).unwrap();
+    assert!(bundle::validate(&bad, &Default::default(), &bytes).is_err());
+}
