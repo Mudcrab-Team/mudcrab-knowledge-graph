@@ -42,6 +42,7 @@ The CLI emits JSON. Queries require a named or immutable context; importing a sn
 | Agent changing this repository | [AGENTS.md](AGENTS.md) |
 | Materials and converter integration | [Companion Mudcrab integration](integrations/mudcrab/README.md) |
 | Ghidra, RenderDoc, runtime records | [Adapter guide](docs/adapters.md) |
+| Lighting-corpus claims import | [Corpus import](docs/corpus-import.md) |
 | Data classification and sharing | [Privacy and public export](docs/privacy.md) |
 | Developer | [CONTRIBUTING.md](CONTRIBUTING.md), [architecture](docs/architecture.md) |
 | Contracts and implementation scope | [SPEC.md](SPEC.md), [contract index](research/knowledge-graph/README.md) |

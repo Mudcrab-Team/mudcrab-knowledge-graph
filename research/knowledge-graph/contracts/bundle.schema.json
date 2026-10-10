@@ -646,7 +646,8 @@
               "Capture",
               "DrawEvent",
               "GpuResource",
-              "RuntimeObservation"
+              "RuntimeObservation",
+              "ResearchClaim"
             ]
           },
           "logical_key": {
@@ -734,7 +735,12 @@
               "OBSERVED_AT",
               "OBSERVED_CALL",
               "IMPORTS",
-              "EVOLVES_TO"
+              "EVOLVES_TO",
+              "SUPPORTS",
+              "CHALLENGES",
+              "DUPLICATES",
+              "RELATED_TO",
+              "DEPENDS_ON"
             ]
           },
           "object": {

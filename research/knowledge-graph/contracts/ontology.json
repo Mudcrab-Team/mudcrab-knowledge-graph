@@ -20,7 +20,8 @@
     "Capture",
     "DrawEvent",
     "GpuResource",
-    "RuntimeObservation"
+    "RuntimeObservation",
+    "ResearchClaim"
   ],
   "provenance_classes": [
     "extracted",
@@ -334,7 +335,8 @@
         "Capture",
         "DrawEvent",
         "GpuResource",
-        "RuntimeObservation"
+        "RuntimeObservation",
+        "ResearchClaim"
       ],
       "default_automatic_admission": true
     },
@@ -374,7 +376,8 @@
         "Capture",
         "DrawEvent",
         "GpuResource",
-        "RuntimeObservation"
+        "RuntimeObservation",
+        "ResearchClaim"
       ],
       "object_kinds": [
         "Concept"
@@ -574,7 +577,8 @@
         "Capture",
         "DrawEvent",
         "GpuResource",
-        "RuntimeObservation"
+        "RuntimeObservation",
+        "ResearchClaim"
       ],
       "object_kinds": [
         "SourceFile",
@@ -596,7 +600,8 @@
         "Capture",
         "DrawEvent",
         "GpuResource",
-        "RuntimeObservation"
+        "RuntimeObservation",
+        "ResearchClaim"
       ],
       "default_automatic_admission": false
     },
@@ -745,6 +750,56 @@
         "DrawEvent",
         "GpuResource",
         "RuntimeObservation"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "SUPPORTS",
+      "subject_kinds": [
+        "ResearchClaim"
+      ],
+      "object_kinds": [
+        "ResearchClaim"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "CHALLENGES",
+      "subject_kinds": [
+        "ResearchClaim"
+      ],
+      "object_kinds": [
+        "ResearchClaim"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "DUPLICATES",
+      "subject_kinds": [
+        "ResearchClaim"
+      ],
+      "object_kinds": [
+        "ResearchClaim"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "RELATED_TO",
+      "subject_kinds": [
+        "ResearchClaim"
+      ],
+      "object_kinds": [
+        "ResearchClaim"
+      ],
+      "default_automatic_admission": false
+    },
+    {
+      "name": "DEPENDS_ON",
+      "subject_kinds": [
+        "Concept"
+      ],
+      "object_kinds": [
+        "Concept"
       ],
       "default_automatic_admission": false
     }

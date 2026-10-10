@@ -236,11 +236,13 @@ Record `lineage_roots` for repositories/imported symbol databases. A CommonLib h
 
 ### 5.1 Required node kinds
 
-`SourceFile`, `DocumentSection`, `CodeSymbol`, `ExternalSymbol`, `BinaryFunction`, `DataType`, `TypeField`, `Concept`, `Asset`, `AssetBlock`, `AssetField`, `Material`, `TextureBinding`, `ConversionStep`, `ShaderModule`, `ShaderBinding`, `Capture`, `DrawEvent`, `GpuResource`, `RuntimeObservation`.
+`SourceFile`, `DocumentSection`, `CodeSymbol`, `ExternalSymbol`, `BinaryFunction`, `DataType`, `TypeField`, `Concept`, `Asset`, `AssetBlock`, `AssetField`, `Material`, `TextureBinding`, `ConversionStep`, `ShaderModule`, `ShaderBinding`, `Capture`, `DrawEvent`, `GpuResource`, `RuntimeObservation`, `ResearchClaim`.
 
 Keep small scalar field values in the owning node's typed attributes. Promote a field to an `AssetField`/`TypeField` when it must be independently referenced. Do not create a graph node for every byte or every P-code operation in the entire executable. Detailed operations belong in bounded local artifacts, linked by locators.
 
 Node attributes are version-scoped. Semantic attributes such as “this bit means double-sided” require a node-evidence link or a separate assertion; no unsupported semantics hidden in free-form JSON.
+
+A `ResearchClaim` node carries one reviewed research statement. Its attributes hold small scalars only: the stable claim ID, note ID, domain, scope, and the recorded assessment. The statement text and any verbatim excerpt stay in artifact bytes and reach the node through node-evidence locators, never as bare unattributed strings. The recorded assessment is informational provenance about the exporting review process; graph admission is governed solely by assertion review state, so an imported `supported_static` claim still enters through proposed assertions and explicit review.
 
 ### 5.2 Required relationship vocabulary
 
@@ -257,8 +259,14 @@ The machine-readable ontology lists allowed kinds. Minimum relationships:
 | `HANDLES_CONCEPT`, `CORRESPONDS_TO` | Explicit cross-layer mappings; never a blanket equivalence claim. |
 | `CAPTURED_IN`, `BINDS_RESOURCE`, `OBSERVED_AT`, `OBSERVED_CALL` | Capture/session-scoped observations. |
 | `IMPORTS`, `EVOLVES_TO` | Dependency/import and explicitly qualified cross-version continuity. |
+| `SUPPORTS`, `CHALLENGES`, `DUPLICATES`, `RELATED_TO` | Curated judgments between research claims, each with supporting evidence. |
+| `DEPENDS_ON` | Conceptual dependency between concepts; never proven order, selection, or execution. |
 
 Do not introduce an unqualified `SAME_AS` edge. Do not infer `CALLS_DIRECT` from a text match or generic SCIP reference. Do not infer field reads/writes merely because a type name appears in decompiled text.
+
+Claim relationships record auditor judgments, not computed similarity. `SUPPORTS`, `CHALLENGES`, `DUPLICATES`, and `RELATED_TO` each require a supporting evidence link to the ledger span that records the judgment, start in manual or hypothesis provenance, and enter through proposed review. A `CHALLENGES` edge does not by itself contradict either claim's evidence; use an explicit scoped conflict when two admitted assertions cannot both hold. `DEPENDS_ON` carries the source model's dependency label in its attributes and inherits the model's own limits: where the source declares conceptual dependencies only, the edge MUST NOT be read as frame order, light selection, resource binding, or retail execution.
+
+A `ResearchClaim` may be the subject of `DESCRIBES_CONCEPT` (claim-to-model associations), the subject or object of `CORRESPONDS_TO` (claim-to-code or claim-to-artifact traces, never blanket equivalence), and the object of `DOCUMENTS` (the ledger or audit section that records it).
 
 ### 5.3 Evidence locators
 
